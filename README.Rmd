@@ -1,0 +1,57 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# ChromoCorrect
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+ChromoCorrect is an R package and associated R Shiny app that allows for detection and correction of chromosomal bias.
+
+## Installation
+
+You can install the development version of ChromoCorrect from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("gerisullivan/ChromoCorrect")
+```
+
+## Example
+
+To structure read counts ready for correction using R:
+
+```{r example}
+library(ChromoCorrect)
+# If current working directory is folder with all .csv files:
+readcounts <- structure_rc()
+
+# If wanting to specify path:
+readcounts <- structure_rc(csvpath = "~/path/to/files")
+
+# If not wanting locus information:
+readcounts <- structure_rc(csvpath = "~/path/to/files", getLocusInfo = FALSE)
+```
+
+To normalise your read counts affected by chromosomal bias:
+
+```{r example}
+library(ChromoCorrect)
+# If column names for control are "MH_1" and "MH_2":
+normalise_CB(readcounts, control = "MH", windowSize = "auto", minrc = 10, writePlots = TRUE, locusInfo = TRUE, path = "~/path/to/files")
+```
+
+
+
