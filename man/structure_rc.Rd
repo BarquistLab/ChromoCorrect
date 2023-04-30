@@ -5,10 +5,10 @@
 Combine read counts from multiple files listed in a folder
 }
 \description{
-This function takes all .csv files in a specified directory 
-(default: current working directory) and merges them by column 'locus_tag.' 
-It then extracts the column called 'read_count' and puts them together in a 
-data frame. 
+This function takes all .csv files in a specified directory
+(default: current working directory) and merges them by column 'locus_tag.'
+It then extracts the column called 'read_count' and puts them together in a
+data frame.
 }
 \usage{
 structure_rc(csvpath = getwd(), getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv")
@@ -62,4 +62,5 @@ readcounts <- structure_rc(csvpath = "~/path/to/files")
 
 # If not wanting locus information:
 readcounts <- structure_rc(csvpath = "~/path/to/files", getLocusInfo = FALSE)
+}
 

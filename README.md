@@ -19,7 +19,16 @@ You can install the development version of ChromoCorrect from
 devtools::install_github("gerisullivan/ChromoCorrect")
 ```
 
-## Example
+## Example - running the app
+
+To start the shiny app:
+
+``` r
+library(ChromoCorrect)
+app()
+```
+
+## Example - running in R
 
 To obtain read counts and perform normalisation:
 
