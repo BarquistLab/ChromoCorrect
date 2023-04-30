@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Geraldine", "Sullivan", , "geraldine.sullivan@hdr.mq.edu.au", role = c("aut", "cre"),
            comment = c(ORCID = "0000000152538660"))
-Description:  A package and R Shiny app that detects whether chromosomal bias is occuring, and corrects it, in read count data.
+Description: A package and R Shiny app that detects whether chromosomal bias is occuring, and corrects it, in read count data.
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -22,3 +22,5 @@ Imports:
     shinydashboard,
     shinydashboardPlus,
     shinyjs
+URL: https://github.com/gerisullivan/ChromoCorrect
+BugReports: https://github.com/gerisullivan/ChromoCorrect/issues
