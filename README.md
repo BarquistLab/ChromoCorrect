@@ -21,7 +21,7 @@ devtools::install_github("gerisullivan/ChromoCorrect")
 
 ## Example
 
-To obtain read counts for normalisation:
+To obtain read counts and perform normalisation:
 
 ``` r
 library(ChromoCorrect)
