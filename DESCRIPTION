@@ -24,3 +24,6 @@ Imports:
     shinyjs
 URL: https://github.com/gerisullivan/ChromoCorrect
 BugReports: https://github.com/gerisullivan/ChromoCorrect/issues
+Depends: 
+    R (>= 2.10)
+LazyData: true
