@@ -3,7 +3,9 @@
 \name{detect_bias}
 \alias{detect_bias}
 \title{detect_bias()}
-
+\usage{
+detect_bias(path, locusInfo = TRUE, savePlot = TRUE)
+}
 \arguments{
 \item{path}{= "/logfcs"}
 

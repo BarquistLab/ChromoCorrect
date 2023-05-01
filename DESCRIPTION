@@ -16,6 +16,7 @@ Imports:
     ggplot2,
     htmltools,
     htmlwidgets,
+    magrittr,
     patchwork,
     shiny,
     shinyalert,
