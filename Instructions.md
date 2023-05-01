@@ -26,8 +26,8 @@ The ciprofloxacin data set published with this paper is available under /ChromoC
 # Running the normalisation locally
 ## Folder organisation
 To organise your input and output files, we recommend creating a folder and R Project specifically for the ChromoCorrect package. Within this folder, create two sub-folders: ‘logFCs’, and ‘readcounts’.
-In ‘logFCs’, put your output files either from Bio::TraDIS or other analysis pipelines. This requires the columns *locus_tag* and *logFC*, with loci in the same order as they are on the chromosome. If you are using default TraDIS output files, the order is correct.
-In ‘readcounts’, put your tradis insert site files or files containing read counts from other analysis pipelines. The files require a *locus_tag* column and a *read_count* column for the script to run. The script also assumes the loci are in the same order as they are on the chromosome.
+In ‘logFCs’, put your output files either from Bio::TraDIS or other analysis pipelines. This requires the columns **locus_tag** and **logFC**, with loci in the same order as they are on the chromosome. If you are using default TraDIS output files, the order is correct.
+In ‘readcounts’, put your tradis insert site files or files containing read counts from other analysis pipelines. The files require a **locus_tag** column and a **read_count** column for the script to run. The script also assumes the loci are in the same order as they are on the chromosome.
 ## Run the normalisation
 1. To make a new R Project, open an RStudio session and navigate to File --> New Project… --> Existing Directory and browse for your ChromoCorrect folder. Tick the box to open in a new session.
 
