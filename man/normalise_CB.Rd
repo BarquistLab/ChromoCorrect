@@ -2,7 +2,7 @@
 \alias{normalise_CB}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Normalise chromosomal location bias in read counts
 }
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
