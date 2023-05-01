@@ -2,33 +2,39 @@
 % Please edit documentation in R/normalise_bias.R
 \name{normalise_bias}
 \alias{normalise_bias}
-\title{normalise_bias}
+\title{Normalise bias}
 \usage{
 normalise_bias(
   x,
+  control = "",
   windowSize = "auto",
   minrc = 10,
-  control = "",
   writePlots = TRUE,
   locusInfo = TRUE,
-  path = getwd()
+  path = "./readcounts/"
 )
 }
 \arguments{
-\item{x}{= readcounts}
+\item{x}{Readcounts from structure_rc(). Required.}
 
-\item{windowSize}{= "auto"}
+\item{control}{Name of the condition that is to be used for the control during comparisons. No replicate information desired. Required.}
 
-\item{minrc}{= 10}
+\item{windowSize}{Specify the window size for the sliding median normalisation. Either "auto" or a number. Minimum 200, maximum 1000. Optional. Default: auto.}
 
-\item{control}{= ""}
+\item{minrc}{Minimum read count for filtering out low values. Optional. Default: 10.}
 
-\item{writePlots}{= TRUE}
+\item{writePlots}{TRUE or FALSE. Write out locus by fold change scatterplots to observe peaks and troughs in data. Plots are written to path specified in path variable. Optional. Default: TRUE.}
 
-\item{locusInfo}{= TRUE}
+\item{locusInfo}{TRUE or FALSE. Whether locus information should be added to locus tags. Only possible if structure_rc() set getLocusInfo to TRUE. Path to file must be specified in path variable. Optional. Default: TRUE.}
 
-\item{path}{= getwd()}
+\item{path}{Path to folder containing locusInfo.tsv, and path where plots will be saved. Required if locusInfo = TRUE. Default: "./readcounts.}
 }
 \description{
-normalise_bias
+Normalises chromosomal location bias in read counts
+}
+\references{
+Will add here later
+}
+\author{
+Geraldine J Sullivan
 }

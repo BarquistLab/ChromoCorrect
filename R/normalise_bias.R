@@ -1,26 +1,26 @@
-#' normalise_bias
+#' @title Normalise bias
 #'
-#' @param x = readcounts
-#' @param windowSize = "auto"
-#' @param minrc = 10
-#' @param control = ""
-#' @param writePlots = TRUE
-#' @param locusInfo = TRUE
-#' @param path = getwd()
+#' @description Normalises chromosomal location bias in read counts
 #'
-#' @importFrom edgeR "calcNormFactors" "estimateGLMCommonDisp" "estimateGLMTagwiseDisp" "glmFit" "glmLRT" "DGEList" "scaleOffset"
-#' @importFrom limma "makeContrasts"
-#' @importFrom stats "relevel" "model.matrix" "lm" "loess" "median" "quantile"
-#' @importFrom graphics "legend" "abline"
-#' @importFrom utils "read.delim"
+#' @author Geraldine J Sullivan
+#'
+#' @param x Readcounts from structure_rc(). Required.
+#' @param control Name of the condition that is to be used for the control during comparisons. No replicate information desired. Required.
+#' @param windowSize Specify the window size for the sliding median normalisation. Either "auto" or a number. Minimum 200, maximum 1000. Optional. Default: auto.
+#' @param minrc Minimum read count for filtering out low values. Optional. Default: 10.
+#' @param locusInfo TRUE or FALSE. Whether locus information should be added to locus tags. Only possible if structure_rc() set getLocusInfo to TRUE. Path to file must be specified in path variable. Optional. Default: TRUE.
+#' @param path Path to folder containing locusInfo.tsv, and path where plots will be saved. Required if locusInfo = TRUE. Default: "./readcounts.
+#' @param writePlots TRUE or FALSE. Write out locus by fold change scatterplots to observe peaks and troughs in data. Plots are written to path specified in path variable. Optional. Default: TRUE.
+#'
+#' @references Will add here later
 #'
 normalise_bias <- function(x,
+                           control = "",
                          windowSize = "auto",
                          minrc = 10,
-                         control = "",
                          writePlots = TRUE,
                          locusInfo = TRUE,
-                         path = getwd())
+                         path = "./readcounts/")
 {
   if (windowSize == "auto") {window = 500} else {window = windowSize}
   if (control == "") {stop("Please specify the name of your control file. This will be any text that is before '_1.csv'")}

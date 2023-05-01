@@ -2,21 +2,27 @@
 % Please edit documentation in R/structure_rc.R
 \name{structure_rc}
 \alias{structure_rc}
-\title{structure_rc}
+\title{Structure read counts}
 \usage{
 structure_rc(
-  csvpath = "./readcounts",
+  csvpath = "./readcounts/",
   getLocusInfo = TRUE,
   suffix = ".tradis_gene_insert_sites.csv"
 )
 }
 \arguments{
-\item{csvpath}{"./readcounts"}
+\item{csvpath}{Path to folder containing .csv files containing read counts. All .csv files will be imported. Default: current working directory.}
 
-\item{getLocusInfo}{= TRUE}
+\item{getLocusInfo}{TRUE or FALSE. If TRUE, locus information is saved as 'locusInfo.tsv' for import during normalisation. If FALSE, normalisation won't be able to run for normalisation and only locus tags will be outputted. Default: TRUE.}
 
-\item{suffix}{= ".tradis_gene_insert_sites.csv"}
+\item{suffix}{Read count files are expected to be traDIS outputs, so expected names are "condition_rep.tradis_gene_insert_sites.csv". If your file type is different, change to everything after the replicate information to rename columns efficiently. Default: .tradis_gene_insert_sites.csv}
 }
 \description{
-structure_rc
+Structure read counts for normalisation with normalise_bias()
+}
+\references{
+Will go here later
+}
+\author{
+Geraldine J Sullivan
 }
