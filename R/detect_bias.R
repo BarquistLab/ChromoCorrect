@@ -4,14 +4,12 @@
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'
-#' @return
-#' @export
+#' @importFrom ggplot2 "theme_bw" "theme" "element_text" "ggplot" "aes" "geom_point" "facet_wrap" "labs" "scale_color_manual" "scale_x_continuous"
+#' @importFrom grDevices "png" "dev.off"
 #'
-#' @examples
-#' detect_bias()
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
-  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), read.delim, sep = ",")
-  joined <- myfiles %>% purrr::reduce(full_join, by = "locus_tag")
+  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim, sep = ",")
+  joined <- myfiles %>% purrr::reduce(dplyr::full_join, by = "locus_tag")
   filenames <- list.files(path = path, pattern = "*.csv") %>%
     gsub(pattern = ".csv", replacement = "")
   if (locusInfo == TRUE){
@@ -23,7 +21,7 @@ detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
     dat <- joined[,-c(1)]
     colnames(dat) <- "locus_tag"
   }
-  dat.2 <- dat %>% select(contains(c("logFC", 'pvalue')))
+  dat.2 <- dat %>% dplyr::select(dplyr::contains(c("logFC", 'pvalue')))
   colnames(dat.2) <- c(gsub("$", "_logFC", filenames), gsub("$", "_pvalue", filenames))
 
   cols <- c("logFC", "pvalue", "locus_tag", "sig", "ob", "cond")

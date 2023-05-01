@@ -1,8 +1,17 @@
-structure_rc <- function(csvpath = getwd(), getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv") {
-  myfiles <- lapply(list.files(path = csvpath, pattern = "*.csv", 
-                               full.names = TRUE), read.delim)  
+#' structure_rc
+#'
+#' @param csvpath "./readcounts"
+#' @param getLocusInfo = TRUE
+#' @param suffix = ".tradis_gene_insert_sites.csv"
+#'
+#' @importFrom utils "read.delim" "write.table"
+#' @importFrom dplyr "full_join" "select" "contains"
+#'
+structure_rc <- function(csvpath = "./readcounts", getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv") {
+  myfiles <- lapply(list.files(path = csvpath, pattern = "*.csv",
+                               full.names = TRUE), read.delim)
   joined <- myfiles %>% purrr::reduce(full_join, by = "locus_tag")
-  filenames <- list.files(pattern = "*sites.csv", path = csvpath) %>% 
+  filenames <- list.files(pattern = "*sites.csv", path = csvpath) %>%
     gsub(pattern = suffix, replacement = "")
   rc <- joined %>% select(contains(c("locus_tag", "read_count")))
   colnames(rc)[2:ncol(rc)] <- filenames

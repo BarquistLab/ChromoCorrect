@@ -4,7 +4,7 @@
 \alias{detect_bias}
 \title{detect_bias()}
 \usage{
-detect_bias(path, locusInfo = TRUE, savePlot = TRUE)
+detect_bias(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE)
 }
 \arguments{
 \item{path}{= "/logfcs"}
@@ -13,12 +13,6 @@ detect_bias(path, locusInfo = TRUE, savePlot = TRUE)
 
 \item{savePlot}{= TRUE}
 }
-\value{
-
-}
 \description{
-detect_bias()
-}
-\examples{
 detect_bias()
 }
