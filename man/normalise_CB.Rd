@@ -7,9 +7,7 @@
 \description{
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
-\usage{
-normalise_CB(x, control = "", windowSize = "auto", minrc = 10, \cr writePlots = TRUE, locusInfo = TRUE, path = getwd())
-}
+
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
@@ -20,7 +18,7 @@ Required.
 Name of the condition that is to be used for the control during comparisons. No replicate information desired. \cr
 Required.
 }
-\item{windowSize}{ 
+\item{windowSize}{
 Specify the window size for the sliding median normalisation. Either "auto" or a number. Minimum 200, maximum 1000. \cr
 Optional. Default: auto.
 }

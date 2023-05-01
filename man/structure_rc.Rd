@@ -10,9 +10,7 @@ This function takes all .csv files in a specified directory
 It then extracts the column called 'read_count' and puts them together in a
 data frame.
 }
-\usage{
-structure_rc(csvpath = getwd(), getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv")
-}
+
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{csvpath}{
