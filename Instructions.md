@@ -1,10 +1,3 @@
----
-title: "Instructions for Using the ChromoCorrect R Package"
-output: 
-  word_document: 
-    reference_docx: reference.docx
----
-
 # Installation
 
 1. Install R by going to the following website and following the installation instructions: https://cran.r-project.org/
