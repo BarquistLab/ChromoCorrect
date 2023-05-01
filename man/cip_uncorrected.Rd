@@ -5,8 +5,6 @@
 \alias{cip_uncorrected}
 \title{Uncorrected ciprofloxacin transposon insertion sequencing dataset affected by chromosomal location bias}
 \format{
-\subsection{\code{cip_uncorrected}}{
-
 A data frame with 3,920 rows and 7 columns:
 \describe{
 \item{locus_tag}{Escherichia coli BW25113 locus tag}
@@ -16,7 +14,6 @@ A data frame with 3,920 rows and 7 columns:
 \item{logCPM}{Log2 counts per million calculated with the Bio::TraDIS toolkit, without normalisation}
 \item{PValue}{Pvalue (unadjusted) calculated with the Bio::TraDIS toolkit, without normalisation}
 \item{q.value}{Adjusted pvalue calculated with the Bio::TraDIS toolkit, without normalisation}
-}
 }
 }
 \source{
