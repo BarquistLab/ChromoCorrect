@@ -13,14 +13,14 @@ library(patchwork)
 library(edgeR)
 library(FBN)
 library(shinyalert)
-#source("../../scripts/structure_rc.R")
-#source("../../scripts/normalise_CB.R")
+
+wdir <- getwd()
 
 shinyApp(
   ui = dashboardPage(
     options = list(sidebarExpandOnHover = TRUE),
     header = dashboardHeader(title = "ChromoCorrect", titleWidth = 300),
-    
+
     sidebar = dashboardSidebar(width = 300, minified = F, collapsed = F,
                                h4("Upload files here"),
                                uiOutput("mytab1"), uiOutput("mytab1.1"),
@@ -49,8 +49,8 @@ shinyApp(
                            textOutput("dimension_display"),
                            h4("Upload your Bio::TraDIS output files to determine whether chromosomal bias is affecting your data"),
                            p("If the overall trend of your fold changes does not match the red line, your data needs normalising."),
-                           box(title = "Locus by fold change scatterplot", 
-                               status = "primary", 
+                           box(title = "Locus by fold change scatterplot",
+                               status = "primary",
                                width = 8, height = 6,
                                imageOutput("detec_fc", height = "100%", width = "100%")),
                            box(
@@ -58,7 +58,7 @@ shinyApp(
                              title = "Decision", status = "warning",
                              h4(htmlOutput(outputId = "detec_text"))
                            )),
-                  
+
                   tabPanel("Correcting",
                            br(),
                            h4("Upload your Bio::TraDIS read files to correct the chromosomal bias affecting your data"),
@@ -75,19 +75,19 @@ shinyApp(
                   ))
     )
   ),
-  server = function(input, output){ 
-    
+  server = function(input, output){
+
     output$test <- renderText({
       return(paste("<style='text-indent:1em;'>If the overall trend of your fold changes does not match the red line, your data needs normalising."))
     })
-    
+
     output$mytab1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
                          fileInput("uploadfc", "Upload your traDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
         ))
     })
-    
+
     output$mytab1.1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
@@ -95,7 +95,7 @@ shinyApp(
                                         choices = gsub(".csv", "", input$uploadfc$name))
         ))
     })
-    
+
     detecplot <- reactive({
       req(input$uploadfc)
       num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
@@ -109,27 +109,27 @@ shinyApp(
         scale_color_manual(values = c("Significant" = "red", "Not significant" = "black")) +
         theme(plot.title = element_text(hjust = 0.5),
               text = element_text(size = 16)) +
-        labs(x = "Locus", y = "Log2 Fold Change", title = paste("Fold change by locus scatterplot - ", 
+        labs(x = "Locus", y = "Log2 Fold Change", title = paste("Fold change by locus scatterplot - ",
                                                                 gsub(pattern = ".csv", "", input$uploadfc$name[[num]])))
     })
-    
+
     output$detec_fc <- renderImage({
       req(input$uploadfc)
       outfile <- tempfile(fileext = ".png")
-      png(outfile, 
-          width = 0.6*input$dimension[1]*8, 
+      png(outfile,
+          width = 0.6*input$dimension[1]*8,
           height = 400*8,
           res = 72*8)
       print(detecplot())
       dev.off()
-      
+
       list(src = outfile,
            contentType = 'image/png',
            width = 0.6*input$dimension[1],
            height = 400,
            alt = "This is alternate text")
     }, deleteFile = TRUE)
-    
+
     output$detec_text <- renderText({
       req(input$uploadfc)
       num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
@@ -156,7 +156,7 @@ shinyApp(
         return(paste("<span style=\"color:green\">The trend line appears to be approximately equal to 0.<br>Your data does not need correction.</span>"))
       }
     })
-    
+
     output$mytab2 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Correcting"',
@@ -164,7 +164,7 @@ shinyApp(
                          fileInput("rcfile", "OR upload your read count table here", multiple = FALSE)
         ))
     })
-    
+
     output$mytab2.1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Correcting"',
@@ -176,10 +176,10 @@ shinyApp(
                          } else if (!is.null(input$rcfile)) {
                            rc <- read.delim(input$rcfile$datapath)
                            selectizeInput("controlrc", "Select which condition is your control:",
-                                          choices = c("Select one here", unique(gsub("_[0-9].*", "", colnames(rc)[2:ncol(rc)])))) 
+                                          choices = c("Select one here", unique(gsub("_[0-9].*", "", colnames(rc)[2:ncol(rc)]))))
                          } else {
                            selectizeInput("controlrc", "Select which condition is your control:",
-                                          choices = c("Select one here")) 
+                                          choices = c("Select one here"))
                          },
                          uiOutput("button"),
                          hr(), h4("Optional"),
@@ -187,8 +187,8 @@ shinyApp(
                          fileInput("locusinfo", "Upload tab separate locus information", multiple = FALSE),
                          p("For example, a tab separated file with locus_tag, gene_name, function for extra information in the outputs.")
         ))
-    })      
-    
+    })
+
     output$button <- renderUI({
       if (input$controlrc == "Select one here"){
         NULL
@@ -218,13 +218,13 @@ shinyApp(
         }
       }
     })
-    
+
     readcounts <- eventReactive(input$run, {
       if (!is.null(input$uploadrc)){
         myfiles <- purrr::map(input$uploadrc$datapath, read.delim) %>%
           purrr::set_names(input$uploadrc$name)
         joined <- myfiles %>% purrr::reduce(full_join, by = "locus_tag")
-        filenames <- input$uploadrc$name %>% 
+        filenames <- input$uploadrc$name %>%
           gsub(pattern = ".tradis_gene_insert_sites.csv", replacement = "")
         rc <- joined %>% select(contains(c("locus_tag", "read_count")))
         colnames(rc)[2:ncol(rc)] <- filenames
@@ -233,9 +233,9 @@ shinyApp(
       }
       rc
     })
-    
+
     done <- FALSE
-    
+
     correction <- reactive({
       window_size = 500
       while(TRUE){
@@ -252,22 +252,22 @@ shinyApp(
           calc$norm <- as.integer(round(calc[,3]/calc$ratio))
           norm_counts[,i-2] <- calc$norm
         }
-        
+
         offset <- (log(norm_counts + 0.01) - log(rc[,3:(ncol(rc))] + 0.01))
         eff.lib <- calcNormFactors(norm_counts) * colSums(norm_counts)
         offset <- sweep(offset, 2, log(eff.lib), "-")
         colnames(offset) <- colnames(norm_counts) <- colnames(rc)[3:ncol(rc)]
-        
+
         # norm_counts <- norm_counts[apply(apply(rc[3:ncol(rc)], 1, ">", 10), 2, any),]
         # offset <- offset[apply(apply(rc[3:ncol(rc)], 1, ">", 10), 2, any),]
         # rc <- rc[apply(apply(rc[3:ncol(rc)], 1, ">", 10), 2, any),]
         norm_counts <- norm_counts[apply(apply(rc[3:ncol(rc)], 1, ">", input$minrc), 2, any),]
         offset <- offset[apply(apply(rc[3:ncol(rc)], 1, ">", input$minrc), 2, any),]
         rc <- rc[apply(apply(rc[3:ncol(rc)], 1, ">", input$minrc), 2, any),]
-        
+
         rownames(offset) <- rownames(rc) <- rc$locus_tag
         rc <- rc[,-c(1:2)]
-        
+
         # Step 3 - edgeR (differential expression)
         group <- gsub("_[0-9]", replacement = "", x = colnames(rc))
         conds_edgeR <- as.factor(unique(group))
@@ -284,10 +284,10 @@ shinyApp(
         fit <- glmFit(y, design, robust=TRUE)
         lrt <- glmLRT(fit, contrast=contrast)
         tags_after <- lrt$table
-        
+
         length <- ceiling(nrow(tags_after)/5)
         tagplot <- split(tags_after, rep(1:ceiling(nrow(tags_after)/length), each=length, length.out=nrow(tags_after)))
-        
+
         summary <- data.frame()
         for (i in 1:length(tagplot)){
           dat <- tagplot[[i]]
@@ -333,7 +333,7 @@ shinyApp(
       tags_after <<- tags_after
       window_size <<- as.numeric(window_size)
     })
-    
+
     corplot <- reactive({
       req(input$run)
       correction()
@@ -357,24 +357,24 @@ shinyApp(
       done <<- TRUE
       before+after
     })
-    
+
     output$corrected_plot <- renderImage({
       req(input$run)
       outfile <- tempfile(fileext = ".png")
-      png(outfile, 
-          width = 0.95*input$dimension[1]*8, 
+      png(outfile,
+          width = 0.95*input$dimension[1]*8,
           height = 500*8,
           res = 72*8)
       print(corplot())
       dev.off()
-      
+
       list(src = outfile,
            contentType = 'image/png',
            width = 0.95*input$dimension[1],
            height = 500,
            alt = "This is alternate text")
     }, deleteFile = TRUE)
-    
+
     output$normdata <- DT::renderDataTable({
       req(input$run)
       output$download <- renderUI({
@@ -395,12 +395,12 @@ shinyApp(
         DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
       }
     })
-    
+
     observeEvent(input$download_attempt, {
-      write.table(table_out,file=paste0(wd, "/", cond, "_ChromoCorrect.csv"), 
+      write.table(table_out,file=paste0(wdir, "/", cond, "_ChromoCorrect.csv"),
                   append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
       shinyalert(title = "Success",
-                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", wd))
+                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", wdir))
     })
-  }   
+  }
 )
