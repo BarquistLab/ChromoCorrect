@@ -4,7 +4,7 @@
 \alias{launch_app}
 \title{Launch Shiny App}
 \usage{
-launch_app(name = "app.R", ...)
+launch_app(name = "app.R")
 }
 \arguments{
 \item{name}{The name of the app to run}
