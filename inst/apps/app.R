@@ -400,7 +400,7 @@ shinyApp(
       write.table(table_out,file=paste0(cond, "_ChromoCorrect.csv"), 
                   append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
       shinyalert(title = "Success",
-                 text = paste0(condition, "_ChromoCorrect.csv has been saved to ", getwd()))
+                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", getwd()))
     })
   }   
 )
