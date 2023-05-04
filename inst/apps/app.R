@@ -397,10 +397,10 @@ shinyApp(
     })
     
     observeEvent(input$download_attempt, {
-      write.table(table_out,file=paste0(cond, "_ChromoCorrect.csv"), 
+      write.table(table_out,file=paste0(wd, "/", cond, "_ChromoCorrect.csv"), 
                   append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
       shinyalert(title = "Success",
-                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", getwd()))
+                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", wd))
     })
   }   
 )
