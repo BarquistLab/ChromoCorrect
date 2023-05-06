@@ -30,5 +30,5 @@ launch_app()
 
 ## Example - running locally
 
-Please see the [Instructions](/inst/Instructions.md) file for running
+Please see the [Instructions](/inst/Instructions.html) file for running
 the ChromoCorrect commands independently of the app.
