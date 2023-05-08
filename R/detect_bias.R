@@ -4,8 +4,7 @@
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'
-#' @importFrom ggplot2 "theme_bw" "theme" "element_text" "ggplot" "aes" "geom_point" "facet_wrap" "labs" "scale_color_manual" "scale_x_continuous"
-#' @importFrom grDevices "png" "dev.off"
+#' @export
 #'
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
   myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim, sep = ",")
