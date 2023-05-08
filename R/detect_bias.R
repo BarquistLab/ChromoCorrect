@@ -1,6 +1,6 @@
 #' detect_bias()
 #'
-#' @param path = "/logfcs"
+#' @param path = "/logFCs"
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'

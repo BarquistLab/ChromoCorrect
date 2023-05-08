@@ -28,7 +28,8 @@ library(ChromoCorrect)
 launch_app()
 ```
 
-## Example - running locally
+## Further instructions
 
-Please see the [Instructions](/inst/Instructions.html) file for running
-the ChromoCorrect commands independently of the app.
+Please see the [Instructions](/inst/Instructions.html) file for detailed
+information on running the ChromoCorrect app or the commands
+independently of the app.

@@ -10,7 +10,7 @@
 #'
 #' @references Will go here later
 #'
-structure_rc <- function(csvpath = "./readcounts/", getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv") {
+structure_rc <- function(csvpath = "/readcounts", getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv") {
   myfiles <- lapply(list.files(path = csvpath, pattern = "*.csv",
                                full.names = TRUE), read.delim)
   joined <- myfiles %>% purrr::reduce(full_join, by = "locus_tag")

@@ -15,16 +15,18 @@
 #' @references Will add here later
 #'
 normalise_bias <- function(x,
-                           control = "",
                          windowSize = "auto",
                          minrc = 10,
                          writePlots = TRUE,
                          locusInfo = TRUE,
                          path = "./readcounts/")
 {
-  if (windowSize == "auto") {window = 500} else {window = windowSize}
-  if (control == "") {stop("Please specify the name of your control file. This will be any text that is before '_1.csv'")}
+  if (windowSize == "auto") {window_size = 500} else {window_size = windowSize}
   if (length(unique(gsub("_[0-9]$", "", colnames(x)[2:ncol(x)]))) > 2) {stop("More than 2 conditions detected. Please rerun the read count script with files from only two conditions, or delete extra columns.")}
+  rc <- cbind("locus_tag" = x[,1], "ob" = 1:nrow(x), x[,2:ncol(x)])
+  controlops <- unique(gsub(pattern = "_[0-9]$", replacement = "", x = colnames(rc)))[-c(1,2)]
+  print(paste0("Possible control options: ", paste0(controlops, collapse = ", ")))
+  control <- as.character(readline(prompt =  "Which one is your control? "))
   message("Minimum read count set to 10 (default)")
   while(TRUE){
     rc <- cbind("locus_tag" = x[,1], "ob" = 1:nrow(x), x[,2:ncol(x)])
@@ -33,7 +35,7 @@ normalise_bias <- function(x,
       calc <- rc[,c(1, 2, i)]
       calc[(nrow(calc)+1):(nrow(calc)+1000),] <- calc[1:1000,]
       calc$keep <- 1:nrow(calc)
-      calc$pred <- FBN::medianFilter(inputData = calc[,3], windowSize = window)
+      calc$pred <- FBN::medianFilter(inputData = calc[,3], windowSize = window_size)
       calc <- calc[!calc$keep > nrow(rc),]
       calc$ratio <- calc$pred/mean(calc$pred)
       calc$norm <- as.integer(round(calc[,3]/calc$ratio))
@@ -71,9 +73,9 @@ normalise_bias <- function(x,
 
     if (writePlots == TRUE){
       name <- paste0(condition, "vs", control)
-      png(paste0(path, "/window", window, " - ", name, ".png"), res = 300, height = 2000, width = 3000)
+      png(paste0(path, "/window", window_size, " - ", name, ".png"), res = 300, height = 2000, width = 3000)
       plot(loess(tags$logFC~tags$ob), pch = 20, cex = 0.5, col = ifelse(tags$PValue<0.05, "red", "black"),
-           xlab = "Locus", ylab = "Log2 fold change", main = paste0(name, " - window size ", window))
+           xlab = "Locus", ylab = "Log2 fold change", main = paste0(name, " - window size ", window_size))
       legend("topright", legend = c("not significant", "significant"), col = c("black", "red"),
              pch = 20)
       abline(h = 0, col = "red")
@@ -111,19 +113,31 @@ normalise_bias <- function(x,
       }
     }
 
-    if (any(summary$V1<0.1) & (any(abs(summary$V2)>0.2) | any(abs(summary$V3)>0.2))){
-      if (windowSize != "auto") {
-        message("Window size of ", window, "doesn't seem suitable, please consider using the windowSize = auto setting instead. Writing to file anyway.")
+    summary <- data.frame()
+    for (i in 1:length(tagplot)){
+      dat <- tagplot[[i]]
+      dat.2 <- cut(dat$logFC, quantile(dat$logFC, c(0, 0.2, 0.8, 1)), include.lowest = TRUE, lab = c("lo", "mid", "hi"))
+      dat.2 <- split(dat$logFC, dat.2)
+      dat.2 <- as.data.frame(dat.2$mid)
+      dat.2$ob <- 1:nrow(dat.2)
+      model <- lm(dat.2$`dat.2$mid`~dat.2$ob)
+      summary[i,1] <- summary(model)$coefficients[2,4]
+      summary[i,2] <- mean(dat.2$`dat.2$mid`)
+      summary[i,3] <- summary(model)$coefficients[1,1]
+      summary[i,4] <- max(dat.2$`dat.2$mid`)-min(dat.2$`dat.2$mid`)
+    }
+    #if (any(summary$V1<0.1) & (any(abs(summary$V2)>0.05) | any(abs(summary$V3)>0.05))){
+    if (any(summary$V1<0.1) & any(abs(summary$V3)>0.05)) {
+      if (window_size == 200){
+        print(paste("Window size of 200 is minimum to retain biological significance with operons. Stopping here."))
         break
-      } else if (window == 200){
-        message("Window size of 200 is minimum to retain biological significance with operons. Stopping here.")
       } else {
-        message("Window size of ", window, " not correct, recomputing")
-        window <- window-100
-        rm(rc, norm_counts, offset)
+        print(paste("Window size of ", window_size, " not correct, recomputing"))
+        window_size <- window_size-100
+        rm(norm_counts, offset, tags, tagplot, summary)
       }
     } else {
-      message("Window size of ", window, " correct, finishing up")
+      print(paste("Window size of ", window_size, " correct, finishing up"))
       break
     }
   }

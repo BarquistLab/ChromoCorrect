@@ -6,7 +6,6 @@
 \usage{
 normalise_bias(
   x,
-  control = "",
   windowSize = "auto",
   minrc = 10,
   writePlots = TRUE,
@@ -17,8 +16,6 @@ normalise_bias(
 \arguments{
 \item{x}{Readcounts from structure_rc(). Required.}
 
-\item{control}{Name of the condition that is to be used for the control during comparisons. No replicate information desired. Required.}
-
 \item{windowSize}{Specify the window size for the sliding median normalisation. Either "auto" or a number. Minimum 200, maximum 1000. Optional. Default: auto.}
 
 \item{minrc}{Minimum read count for filtering out low values. Optional. Default: 10.}
@@ -28,6 +25,8 @@ normalise_bias(
 \item{locusInfo}{TRUE or FALSE. Whether locus information should be added to locus tags. Only possible if structure_rc() set getLocusInfo to TRUE. Path to file must be specified in path variable. Optional. Default: TRUE.}
 
 \item{path}{Path to folder containing locusInfo.tsv, and path where plots will be saved. Required if locusInfo = TRUE. Default: "./readcounts.}
+
+\item{control}{Name of the condition that is to be used for the control during comparisons. No replicate information desired. Required.}
 }
 \description{
 Normalises chromosomal location bias in read counts

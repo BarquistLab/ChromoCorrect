@@ -367,63 +367,86 @@ library(devtools)</code></pre>
 running the following code:</li>
 </ol>
 <pre class="{r}"><code>install_github(&quot;gerisullivan/ChromoCorrect&quot;)</code></pre>
+<div id="folder-organisation" class="section level2">
+<h2>Folder organisation</h2>
+<p>To organise your input and output files, we recommend creating a
+folder on your local computer. Within this folder, create two
+sub-folders: <strong>logFCs</strong>, and
+<strong>readcounts</strong>.</p>
+<p>In <strong>logFCs</strong>, put your output files either from
+Bio::TraDIS or other analysis pipelines. This requires the columns
+<em>locus_tag</em> and <em>logFC</em>, with loci in the same order as
+they are on the chromosome (if you are using default TraDIS output
+files, the order is correct).</p>
+<p>In <strong>readcounts</strong>, put your traDIS insert site files, or
+files containing read counts from other analysis pipelines that require
+correction. The files require a <em>locus_tag</em> column and a
+<em>read_count</em> column for the script to run. The script also
+assumes the loci are in the same order as they are on the
+chromosome.</p>
 </div>
-<div id="launching-the-app" class="section level1">
-<h1>Launching the app</h1>
+<div id="launching-the-app" class="section level2">
+<h2>Launching the app</h2>
 <ol style="list-style-type: decimal">
 <li>Load the <code>ChromoCorrect</code> package by running the following
 code:</li>
 </ol>
 <pre class="{r}"><code>library(ChromoCorrect)</code></pre>
 <ol start="2" style="list-style-type: decimal">
+<li>Set your working directory so you can locate your output:</li>
+</ol>
+<pre class="{r}"><code>setwd(&quot;/path/to/ChromoCorrectdir&quot;)</code></pre>
+<ol start="3" style="list-style-type: decimal">
 <li>Launch the app with the aptly named command:</li>
 </ol>
 <pre class="{r}"><code>launch_app()</code></pre>
 <p>This will launch the R Shiny app, which can be used to interactively
 analyse your data.</p>
 </div>
+<div id="running-the-normalisation-locally" class="section level2">
+<h2>Running the normalisation locally</h2>
+<ol style="list-style-type: decimal">
+<li>Load the <code>ChromoCorrect</code> package by running the following
+code:</li>
+</ol>
+<pre class="{r}"><code>library(ChromoCorrect)</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Set your working directory so you can locate your output:</li>
+</ol>
+<pre class="{r}"><code>setwd(&quot;/path/to/ChromoCorrectdir&quot;)</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Diagnose your output files for chromosomal location bias:</li>
+</ol>
+<pre class="{r}"><code># assuming your logFC files are in a folder called logFCs, the default will work:
+detect_bias()</code></pre>
+<p>A file called ‘detect_bias.png’ will be saved in your logFCs folder.
+Look at it to determine which, if any, of your conditions are affected
+by chromosomal location bias.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Correct your chromosomal location bias, part 1:</li>
+</ol>
+<p>This assumes you have at least two conditions of read counts per run
+of the script, with replicate information in the form of _1, _2 before
+the suffix. e.g. MH_1.tradis_gene_insert_sites.csv,
+MH_2.tradis_gene_insert_sites.csv, Cip_1.tradis_gene_insert_sites.csv,
+Cip_2.tradis_gene_insert_sites.csv.</p>
+<pre class="{r}"><code># import your read counts into one file:
+readcounts &lt;- structure_rc(csvpath = &quot;/readcounts&quot;, getLocusInfo = TRUE, suffix = &quot;.tradis_gene_insert_sites.csv&quot;)</code></pre>
+<p>This will save the locus information as ‘locusInfo.tsv’ for the next
+script.</p>
+<ol start="5" style="list-style-type: decimal">
+<li>Correct your chromosomal location bis, part 2:</li>
+</ol>
+<pre class="{r}"><code># normalise your read counts:
+norm_readcounts &lt;- normalise_bias(readcounts)
+# It will prompt you to choose which of your read count files is your control.</code></pre>
+</div>
+</div>
 <div id="example-data" class="section level1">
 <h1>Example data</h1>
 <p>The ciprofloxacin data set published with this paper is available
-under /ChromoCorrect/data/. It can be used within the app and
+under /ChromoCorrect/inputData/. It can be used within the app and
 locally.</p>
-</div>
-<div id="running-the-normalisation-locally" class="section level1">
-<h1>Running the normalisation locally</h1>
-<div id="folder-organisation" class="section level2">
-<h2>Folder organisation</h2>
-<p>To organise your input and output files, we recommend creating a
-folder and R Project specifically for the ChromoCorrect package. Within
-this folder, create two sub-folders: ‘logFCs’, and ‘readcounts’. In
-‘logFCs’, put your output files either from Bio::TraDIS or other
-analysis pipelines. This requires the columns <strong>locus_tag</strong>
-and <strong>logFC</strong>, with loci in the same order as they are on
-the chromosome (if you are using default TraDIS output files, the order
-is correct). In ‘readcounts’, put your traDIS insert site files or files
-containing read counts from other analysis pipelines. The files require
-a <strong>locus_tag</strong> column and a <strong>read_count</strong>
-column for the script to run. The script also assumes the loci are in
-the same order as they are on the chromosome. ## Run the normalisation
-1. To make a new R Project, open an RStudio session and navigate to File
-–&gt; New Project… –&gt; Existing Directory and browse for your
-ChromoCorrect folder. Tick the box to open in a new session.</p>
-<p>Place your input files in the “input” folder and your output files in
-the “output” folder. Any additional data files needed for the package
-should be placed in the “data” folder. This organization will make it
-easier for users to keep track of their input and output files, as well
-as any data files that are needed for the package. 1. Load the
-<code>ChromoCorrect</code> package by running the following code:</p>
-<pre class="{r}"><code>library(ChromoCorrect)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>If you have Bio::TraDIS output files</li>
-</ol>
-<pre class="{r}"><code>ChromoCorrect_script1(&quot;input_file1.csv&quot;, &quot;input_file2.csv&quot;)</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>To run the second script, navigate to the folder that contains your
-input files and run the following code:</li>
-</ol>
-<pre class="{r}"><code>ChromoCorrect_script2(&quot;input_file1.csv&quot;, &quot;input_file2.csv&quot;)</code></pre>
-</div>
 </div>
 <div id="troubleshooting" class="section level1">
 <h1>Troubleshooting</h1>

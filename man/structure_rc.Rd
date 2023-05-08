@@ -5,7 +5,7 @@
 \title{Structure read counts}
 \usage{
 structure_rc(
-  csvpath = "./readcounts/",
+  csvpath = "/readcounts",
   getLocusInfo = TRUE,
   suffix = ".tradis_gene_insert_sites.csv"
 )

@@ -7,7 +7,7 @@
 detect_bias(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE)
 }
 \arguments{
-\item{path}{= "/logfcs"}
+\item{path}{= "/logFCs"}
 
 \item{locusInfo}{= TRUE}
 
