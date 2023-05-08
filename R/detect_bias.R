@@ -6,6 +6,11 @@
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'
+#' @import ggplot2
+#' @import grDevices
+#' @import utils
+#' @import dplyr
+#'
 #' @export
 #'
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
@@ -37,10 +42,10 @@ detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
     dat.plot <- rbind(dat.plot, dat.input)
   }
 
-  plottheme <- theme_bw() +
-    theme(text = element_text(size = 20))
+  plottheme <- ggplot2::theme_bw() +
+    ggplot2::theme(text = ggplot2::element_text(size = 20))
 
-  p <- ggplot(dat.plot, aes(x = ob, y = logFC, col = sig)) +
+  p <- ggplot2::ggplot(dat.plot, aes(x = ob, y = logFC, col = sig)) +
     geom_point(size = 0.1) +
     facet_wrap(~cond) +
     labs(y = "Log2 Fold Change", x = "Locus", col = "Significant?") +

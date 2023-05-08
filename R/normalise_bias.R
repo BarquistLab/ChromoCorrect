@@ -14,6 +14,9 @@
 #'
 #' @references Will add here later
 #'
+#' @import dplyr
+#' @import FBN
+#' @import edgeR
 #' @export
 #'
 normalise_bias <- function(x,

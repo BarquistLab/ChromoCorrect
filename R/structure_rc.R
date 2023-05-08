@@ -10,6 +10,10 @@
 #'
 #' @references Will go here later
 #'
+#' @import purrr
+#' @import utils
+#' @import dplyr
+#'
 #' @export
 #'
 structure_rc <- function(csvpath = "/readcounts", getLocusInfo = TRUE, suffix = ".tradis_gene_insert_sites.csv") {
