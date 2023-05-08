@@ -1,4 +1,6 @@
-#' detect_bias()
+#' @title detect_bias
+#'
+#' @description Generate a png of locus by fold change scatterplot for each output file in a directory to determine whether any are affected by chromosomal location bias.
 #'
 #' @param path = "/logFCs"
 #' @param locusInfo = TRUE

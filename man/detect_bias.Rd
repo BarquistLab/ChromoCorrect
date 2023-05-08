@@ -2,7 +2,7 @@
 % Please edit documentation in R/detect_bias.R
 \name{detect_bias}
 \alias{detect_bias}
-\title{detect_bias()}
+\title{detect_bias}
 \usage{
 detect_bias(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE)
 }
@@ -14,5 +14,5 @@ detect_bias(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE)
 \item{savePlot}{= TRUE}
 }
 \description{
-detect_bias()
+Generate a png of locus by fold change scatterplot for each output file in a directory to determine whether any are affected by chromosomal location bias.
 }

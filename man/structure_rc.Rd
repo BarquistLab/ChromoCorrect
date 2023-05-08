@@ -18,7 +18,7 @@ structure_rc(
 \item{suffix}{Read count files are expected to be traDIS outputs, so expected names are "condition_rep.tradis_gene_insert_sites.csv". If your file type is different, change to everything after the replicate information to rename columns efficiently. Default: .tradis_gene_insert_sites.csv}
 }
 \description{
-Structure read counts for normalisation with normalise_bias()
+Structure read counts for normalisation with normalise_bias
 }
 \references{
 Will go here later

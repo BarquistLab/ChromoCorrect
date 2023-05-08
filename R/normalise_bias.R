@@ -13,6 +13,7 @@
 #' @param writePlots TRUE or FALSE. Write out locus by fold change scatterplots to observe peaks and troughs in data. Plots are written to path specified in path variable. Optional. Default: TRUE.
 #'
 #' @references Will add here later
+#'
 #' @export
 #'
 normalise_bias <- function(x,
