@@ -6,7 +6,7 @@
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'
-#' @import ggplot2
+#' @import "ggplot2"
 #' @import grDevices
 #' @import utils
 #' @import dplyr
@@ -42,8 +42,8 @@ detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
     dat.plot <- rbind(dat.plot, dat.input)
   }
 
-  plottheme <- ggplot2::theme_bw() +
-    ggplot2::theme(text = ggplot2::element_text(size = 20))
+  plottheme <- theme_bw() +
+    theme(text = ggplot2::element_text(size = 20))
 
   p <- ggplot2::ggplot(dat.plot, aes(x = ob, y = logFC, col = sig)) +
     geom_point(size = 0.1) +
