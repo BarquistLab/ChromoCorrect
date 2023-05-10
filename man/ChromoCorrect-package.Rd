@@ -4,9 +4,9 @@
 \name{ChromoCorrect-package}
 \alias{ChromoCorrect}
 \alias{ChromoCorrect-package}
-\title{ChromoCorrect: Detection and Correction of Chromosomal Bias in Read Counts}
+\title{ChromoCorrect: Detection and Correction of Chromosomal Location Bias in Read Counts}
 \description{
-A package and R Shiny app that detects whether chromosomal bias is occuring, and corrects it, in read count data.
+A package and R Shiny app that detects whether chromosomal location bias is occuring, and corrects it, in read count data.
 }
 \seealso{
 Useful links:

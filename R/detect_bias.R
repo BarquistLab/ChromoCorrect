@@ -6,11 +6,6 @@
 #' @param locusInfo = TRUE
 #' @param savePlot = TRUE
 #'
-#' @import "ggplot2"
-#' @import grDevices
-#' @import utils
-#' @import dplyr
-#'
 #' @export
 #'
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
