@@ -15,7 +15,6 @@ biocViews: FBN, locfit
 Imports: 
     dplyr,
     edgeR,
-    FBN,
     ggplot2,
     graphics,
     htmltools,
