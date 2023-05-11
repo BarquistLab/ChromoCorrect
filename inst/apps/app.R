@@ -1,22 +1,25 @@
 library(shiny)
 library(shinyjs)
-library(shinydashboard)
 library(shinyalert)
+library(shinydashboard)
 library(shinydashboardPlus)
 library(htmltools)
 library(htmlwidgets)
 library(dplyr)
-library(shinyjs)
+library(DT)
+library(readr)
+library(purrr)
+library(reshape2)
+library(tidyr)
 library(ggplot2)
 library(patchwork)
 library(edgeR)
 library(FBN)
-library(shinyalert)
 
-wdir <- getwd()
+#wdir <- getwd()
 
 shinyApp(
-  ui = dashboardPage(
+  ui = shinydashboardPlus::dashboardPage(
     options = list(sidebarExpandOnHover = TRUE),
     header = dashboardHeader(title = "ChromoCorrect", titleWidth = 300),
 
@@ -75,10 +78,6 @@ shinyApp(
     )
   ),
   server = function(input, output){
-
-    output$test <- renderText({
-      return(paste("<style='text-indent:1em;'>If the overall trend of your fold changes does not match the red line, your data needs normalising."))
-    })
 
     output$mytab1 <- renderUI({
       tagList(
