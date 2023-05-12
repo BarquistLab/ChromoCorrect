@@ -11,7 +11,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
-biocViews: locfit, edgeR, limma
+biocViews: FBN, locfit, edgeR, limma
 Imports: 
     BiocManager,
     dplyr,
@@ -22,6 +22,8 @@ Imports:
     magrittr,
     patchwork,
     purrr,
+    rlang,
+    rtools,
     shiny,
     shinyalert,
     shinydashboard,
