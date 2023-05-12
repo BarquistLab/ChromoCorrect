@@ -13,6 +13,7 @@ Depends:
     R (>= 2.10)
 biocViews: FBN, locfit, edgeR, limma
 Imports: 
+    BiocManager,
     dplyr,
     ggplot2,
     graphics,
