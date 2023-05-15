@@ -4,7 +4,7 @@ Version: 1.0
 Authors@R: 
     person("Geraldine", "Sullivan", , "geraldine.sullivan@hdr.mq.edu.au", role = c("aut", "cre"),
            comment = c(ORCID = "0000000152538660"))
-Description: A package and R Shiny app that detects whether chromosomal location bias is occuring, and corrects it, in read count data.
+Description: A package and R Shiny app that detects and corrects chromosomal location bias in read count data.
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -23,7 +23,6 @@ Imports:
     patchwork,
     purrr,
     rlang,
-    rtools,
     shiny,
     shinyalert,
     shinydashboard,
