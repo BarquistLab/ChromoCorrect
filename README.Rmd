@@ -56,4 +56,4 @@ launch_app()
 
 ## Further instructions
 
-Please see the [Instructions](/inst/Instructions.html) file for detailed information on running the ChromoCorrect app or the commands independently of the app.
+Please see the [Instructions](https://htmlpreview.github.io/?https://github.com/gerisullivan/ChromoCorrect/blob/master/inst/Instructions.html) file for detailed information on running the ChromoCorrect app or the commands independently of the app.
