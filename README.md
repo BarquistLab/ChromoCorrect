@@ -32,7 +32,7 @@ Windows: download RTools from
 MacOS: the Xcode suite (if not already installed) is available at
 <https://developer.apple.com/xcode/resources/>
 
-## Bioconductor
+### Bioconductor
 
 There are some R packages required to be installed from Bioconductor. If
 they do not download as dependencies when installing ChromoCorrect, you
