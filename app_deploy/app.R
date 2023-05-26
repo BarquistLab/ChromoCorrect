@@ -88,13 +88,13 @@ shinyApp(
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
                          selectizeInput("datasetsnorm", "Select dataset for visualising:",
-                                        choices = gsub(".csv", "", input$uploadfc$name))
+                                        choices = gsub(".csv$", "", input$uploadfc$name))
         ))
     })
 
     detecplot <- reactive({
       req(input$uploadfc)
-      num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
+      num <- grep(value = FALSE, pattern = input$datasetsnorm, fixed = T, x = input$uploadfc$name)
       data <- read.csv(input$uploadfc[[num, "datapath"]])
       data$obs <- 1:nrow(data)
       data$`Significance (0.05)` <- ifelse(data$q.value<0.05, "Significant", "Not significant")
