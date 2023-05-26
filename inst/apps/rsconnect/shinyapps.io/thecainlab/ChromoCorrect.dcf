@@ -5,9 +5,9 @@ account: thecainlab
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9075891
-bundleId: 7202469
+bundleId: 7265844
 url: https://thecainlab.shinyapps.io/ChromoCorrect/
-when: 1683776228.20512
-lastSyncTime: 1683776228.20513
+when: 1685080282.59516
+lastSyncTime: 1685080282.59517
 asMultiple: FALSE
 asStatic: FALSE

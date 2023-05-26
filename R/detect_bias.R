@@ -9,7 +9,7 @@
 #' @export
 #'
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
-  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim, sep = ",")
+  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim)
   joined <- myfiles %>% purrr::reduce(dplyr::full_join, by = "locus_tag")
   filenames <- list.files(path = path, pattern = "*.csv") %>%
     gsub(pattern = ".csv", replacement = "")

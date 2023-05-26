@@ -15,7 +15,7 @@ library(patchwork)
 library(edgeR)
 library(FBN)
 
-#wdir <- getwd()
+wdir <- getwd()
 
 shinyApp(
   ui = shinydashboardPlus::dashboardPage(
@@ -398,6 +398,9 @@ shinyApp(
                   append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
       shinyalert(title = "Success",
                  text = paste0(cond, "_ChromoCorrect.csv has been saved to ", wdir))
+      rm(list = c("cond", "table_out", "tags_after", "tags_before", "wdir", "window_size"), envir = .GlobalEnv)
     })
   }
 )
+
+
