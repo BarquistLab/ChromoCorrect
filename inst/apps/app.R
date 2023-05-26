@@ -96,7 +96,7 @@ shinyApp(
     detecplot <- reactive({
       req(input$uploadfc)
       num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
-      data <- read.csv(input$uploadfc[[num, "datapath"]])
+      data <- read.delim(input$uploadfc[[num, "datapath"]])
       data$obs <- 1:nrow(data)
       data$`Significance (0.05)` <- ifelse(data$q.value<0.05, "Significant", "Not significant")
       ggplot(data, aes(x = obs, y = logFC, col = `Significance (0.05)`)) +
@@ -130,7 +130,7 @@ shinyApp(
     output$detec_text <- renderText({
       req(input$uploadfc)
       num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
-      data <- read.csv(input$uploadfc[[num, "datapath"]])
+      data <- read.delim(input$uploadfc[[num, "datapath"]])
       data$obs <- 1:nrow(data)
       length <- ceiling(nrow(data)/5)
       datcut <- split(data, rep(1:ceiling(nrow(data)/length), each=length, length.out=nrow(data)))
