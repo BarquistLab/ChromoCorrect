@@ -42,12 +42,12 @@ shinyApp(
                                     }, 500);
                                 });
                             ')),
-      h3('Detecting and correcting chromosomal bias'),
+      h3('Detecting and correcting chromosomal location bias'),
       tabsetPanel(id = "tabs",
                   tabPanel("Detecting",
                            br(),
                            textOutput("dimension_display"),
-                           h4("Upload your Bio::TraDIS output files to determine whether chromosomal bias is affecting your data"),
+                           h4("Upload your Bio::TraDIS output files to determine whether chromosomal location bias is affecting your data"),
                            p("If the overall trend of your fold changes does not match the red line, your data needs normalising."),
                            box(title = "Locus by fold change scatterplot",
                                status = "primary",
@@ -61,14 +61,14 @@ shinyApp(
 
                   tabPanel("Correcting",
                            br(),
-                           h4("Upload your Bio::TraDIS read files to correct the chromosomal bias affecting your data"),
+                           h4("Upload your Bio::TraDIS read files to correct the chromosomal location bias affecting your data"),
                            p("This requires two control files and two condition files, or one file of read counts containing all conditions of interest."),
                            box(title = "Before and after normalisation",
                                status = "primary",
                                width = 12, height = 6,
                                imageOutput("corrected_plot", height = "100%", width = "100%")),
                            box(title = "Normalised data",
-                               uiOutput("download"), br(),
+                               downloadButton("downloadcsv", label = "download csv", class = "btn-secondary"), br(),
                                status = "primary",
                                width = 12, height = 6,
                                DT::dataTableOutput("normdata"))
@@ -80,7 +80,7 @@ shinyApp(
     output$mytab1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
-                         fileInput("uploadfc", "Upload your traDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
+                         fileInput("uploadfc", "Upload your TraDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
         ))
     })
 
@@ -156,7 +156,7 @@ shinyApp(
     output$mytab2 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Correcting"',
-                         fileInput("uploadrc", "Upload your traDIS read files here", multiple = TRUE, accept = c(".csv", ".tsv")),
+                         fileInput("uploadrc", "Upload your TraDIS read files here", multiple = TRUE, accept = c(".csv", ".tsv")),
                          fileInput("rcfile", "OR upload your read count table here", multiple = FALSE)
         ))
     })
@@ -252,6 +252,7 @@ shinyApp(
           calc2$ratio <- calc2$pred/mean(calc2$pred)
           calc2$norm <- as.integer(round(calc2[,3]/calc2$ratio))
           norm_counts[,i-2] <- calc2$norm
+          rm(front, back, calc, calc2)
         }
 
         offset <- (log(norm_counts + 0.01) - log(rc[,3:(ncol(rc))] + 0.01))
@@ -285,6 +286,7 @@ shinyApp(
         fit <- glmFit(y, design, robust=TRUE)
         lrt <- glmLRT(fit, contrast=contrast)
         tags_after <- lrt$table
+        tags_after$q.value <- p.adjust(tags_after$PValue, method = "BH")
 
         length <- ceiling(nrow(tags_after)/5)
         tagplot <- split(tags_after, rep(1:ceiling(nrow(tags_after)/length), each=length, length.out=nrow(tags_after)))
@@ -325,10 +327,11 @@ shinyApp(
       de.tgw <- exactTest(d,pair=c(ctrl, condition))
       #de.tgw <- exactTest(d,pair=c("MH", "Cip"))
       tags_before <- data.frame(de.tgw$table)
-      tags_before$`Significance (0.05)` <- ifelse(tags_before$PValue < 0.05, "Significant", "Not significant")
+      tags_before$q.value <- p.adjust(tags_before$PValue, method = "BH")
+      tags_before$`Significance (0.05)` <- ifelse(tags_before$q.value < 0.05, "Significant", "Not significant")
       tags_before <<- tags_before
       tags_after$ob <- 1:nrow(tags_after)
-      tags_after$`Significance (0.05)` <- ifelse(tags_after$PValue < 0.05, "Significant", "Not significant")
+      tags_after$`Significance (0.05)` <- ifelse(tags_after$q.value < 0.05, "Significant", "Not significant")
       cond <<- condition
       tags_before <<- tags_before
       tags_after <<- tags_after
@@ -382,33 +385,28 @@ shinyApp(
       if (done == TRUE) {
         tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
         rownames(tags_after) <- 1:nrow(tags_after)
-        colnames(tags_after)[4:5] <- c("Pvalue", "q.value")
-        table_out <<- tags_after
+        table_out <- tags_after
+        table_out <<- subset(table_out, select=-c(LR))
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
         if (!is.null(input$locusinfo)){
           locusinfo <- read.delim(input$locusinfo$datapath)
           table_out <<- merge(locusinfo, table_out, by = "locus_tag", all.x = TRUE)
         }
         table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
-        table_out
       }
     })
 
     output$normdata <- DT::renderDataTable({
-      output$download <- renderUI({
-        downloadButton("download", label = "download csv", class = "btn-secondary")
-      })
         tableout()
         DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
       })
 
-    output$download <- downloadHandler(
+    output$downloadcsv <- downloadHandler(
       filename = function() {
         paste0(cond, "_ChromoCorrect.csv")
       },
       content = function(file) {
-        table_out <- tableout()
-        write.table(table_out, file, append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
+        write.csv(tableout(), file, row.names=FALSE)
       })
   }
 )

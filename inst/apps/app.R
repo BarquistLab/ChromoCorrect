@@ -43,12 +43,12 @@ shinyApp(
                                     }, 500);
                                 });
                             ')),
-      h3('Detecting and correcting chromosomal bias'),
+      h3('Detecting and correcting chromosomal location bias'),
       tabsetPanel(id = "tabs",
                   tabPanel("Detecting",
                            br(),
                            textOutput("dimension_display"),
-                           h4("Upload your Bio::TraDIS output files to determine whether chromosomal bias is affecting your data"),
+                           h4("Upload your Bio::TraDIS output files to determine whether chromosomal location bias is affecting your data"),
                            p("If the overall trend of your fold changes does not match the red line, your data needs normalising."),
                            box(title = "Locus by fold change scatterplot",
                                status = "primary",
@@ -62,7 +62,7 @@ shinyApp(
 
                   tabPanel("Correcting",
                            br(),
-                           h4("Upload your Bio::TraDIS read files to correct the chromosomal bias affecting your data"),
+                           h4("Upload your Bio::TraDIS read files to correct the chromosomal location bias affecting your data"),
                            p("This requires two control files and two condition files, or one file of read counts containing all conditions of interest."),
                            box(title = "Before and after normalisation",
                                status = "primary",
@@ -81,7 +81,7 @@ shinyApp(
     output$mytab1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
-                         fileInput("uploadfc", "Upload your traDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
+                         fileInput("uploadfc", "Upload your TraDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
         ))
     })
 
@@ -157,7 +157,7 @@ shinyApp(
     output$mytab2 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Correcting"',
-                         fileInput("uploadrc", "Upload your traDIS read files here", multiple = TRUE, accept = c(".csv", ".tsv")),
+                         fileInput("uploadrc", "Upload your TraDIS read files here", multiple = TRUE, accept = c(".csv", ".tsv")),
                          fileInput("rcfile", "OR upload your read count table here", multiple = FALSE)
         ))
     })
@@ -253,6 +253,7 @@ shinyApp(
           calc2$ratio <- calc2$pred/mean(calc2$pred)
           calc2$norm <- as.integer(round(calc2[,3]/calc2$ratio))
           norm_counts[,i-2] <- calc2$norm
+          rm(front, back, calc, calc2)
         }
 
         offset <- (log(norm_counts + 0.01) - log(rc[,3:(ncol(rc))] + 0.01))
@@ -388,7 +389,8 @@ shinyApp(
       if (done == TRUE) {
         tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
         rownames(tags_after) <- 1:nrow(tags_after)
-        table_out <<- tags_after
+        table_out <- tags_after
+        table_out <<- subset(table_out, select=-c(LR))
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
         if (!is.null(input$locusinfo)){
           locusinfo <- read.delim(input$locusinfo$datapath)

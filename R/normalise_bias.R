@@ -12,8 +12,6 @@
 #' @param path Path to folder containing locusInfo.tsv, and path where plots will be saved. Required if locusInfo = TRUE. Default: "./readcounts.
 #' @param writePlots TRUE or FALSE. Write out locus by fold change scatterplots to observe peaks and troughs in data. Plots are written to path specified in path variable. Optional. Default: TRUE.
 #'
-#' @references Will add here later
-#'
 #' @import dplyr
 #' @import FBN
 #' @import edgeR
