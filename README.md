@@ -19,6 +19,31 @@ You can install the development version of ChromoCorrect from
 devtools::install_github("gerisullivan/ChromoCorrect")
 ```
 
+## Dependencies
+
+### RTools
+
+Some packages rely on R packages from source which requires RTools to
+download.
+
+Windows: download RTools from
+<https://cran.r-project.org/bin/windows/Rtools/>
+
+MacOS: the Xcode suite (if not already installed) is available at
+<https://developer.apple.com/xcode/resources/>
+
+### Bioconductor
+
+There are some R packages required to be installed from Bioconductor. If
+they do not download as dependencies when installing ChromoCorrect, you
+can install them yourself below:
+
+``` r
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("FBN", "locfit", "edgeR", "limma")
+```
+
 ## Example - running the app
 
 To start the shiny app:
@@ -30,6 +55,7 @@ launch_app()
 
 ## Further instructions
 
-Please see the [Instructions](/inst/Instructions.html) file for detailed
-information on running the ChromoCorrect app or the commands
-independently of the app.
+Please see the
+[Instructions](https://htmlpreview.github.io/?https://github.com/gerisullivan/ChromoCorrect/blob/master/inst/Instructions.html)
+file for detailed information on running the ChromoCorrect app or the
+commands independently of the app.

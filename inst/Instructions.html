@@ -367,6 +367,18 @@ library(devtools)</code></pre>
 running the following code:</li>
 </ol>
 <pre class="{r}"><code>install_github(&quot;gerisullivan/ChromoCorrect&quot;)</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Make sure your dependencies are installed. RTools: Some packages
+rely on R packages from source which requires RTools to download.
+Windows: download RTools from <a href="https://cran.r-project.org/bin/windows/Rtools/" class="uri">https://cran.r-project.org/bin/windows/Rtools/</a> MacOS:
+the Xcode suite (if not already installed) is available at <a href="https://developer.apple.com/xcode/resources/" class="uri">https://developer.apple.com/xcode/resources/</a></li>
+</ol>
+<p>Bioconductor: There are some R packages required to be installed from
+Bioconductor. If they do not download as dependencies when installing
+ChromoCorrect, you can install them yourself below:</p>
+<pre class="{r}"><code>if (!require(&quot;BiocManager&quot;, quietly = TRUE))
+    install.packages(&quot;BiocManager&quot;)
+BiocManager::install(&quot;FBN&quot;, &quot;locfit&quot;, &quot;edgeR&quot;, &quot;limma&quot;)</code></pre>
 <div id="folder-organisation" class="section level2">
 <h2>Folder organisation</h2>
 <p>To organise your input and output files, we recommend creating a
@@ -444,9 +456,9 @@ norm_readcounts &lt;- normalise_bias(readcounts)
 </div>
 <div id="example-data" class="section level1">
 <h1>Example data</h1>
-<p>The ciprofloxacin data set published with this paper is available
-under /ChromoCorrect/inputData/. It can be used within the app and
-locally.</p>
+<p>The ciprofloxacin data set published with this paper is available at
+<a href="https://github.com/gerisullivan/ChromoCorrect/tree/master/inputData" class="uri">https://github.com/gerisullivan/ChromoCorrect/tree/master/inputData</a>.
+This data can be used to run the scripts and as input for the app.</p>
 </div>
 <div id="troubleshooting" class="section level1">
 <h1>Troubleshooting</h1>

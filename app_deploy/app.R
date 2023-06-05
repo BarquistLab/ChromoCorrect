@@ -10,12 +10,11 @@ library(DT)
 library(readr)
 library(purrr)
 library(reshape2)
+library(tidyr)
 library(ggplot2)
 library(patchwork)
 library(edgeR)
 library(FBN)
-
-wdir <- getwd()
 
 shinyApp(
   ui = shinydashboardPlus::dashboardPage(
@@ -89,14 +88,14 @@ shinyApp(
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
                          selectizeInput("datasetsnorm", "Select dataset for visualising:",
-                                        choices = gsub(".csv", "", input$uploadfc$name))
+                                        choices = gsub(".csv$", "", input$uploadfc$name))
         ))
     })
 
     detecplot <- reactive({
       req(input$uploadfc)
-      num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
-      data <- read.delim(input$uploadfc[[num, "datapath"]])
+      num <- grep(value = FALSE, pattern = input$datasetsnorm, fixed = T, x = input$uploadfc$name)
+      data <- read.csv(input$uploadfc[[num, "datapath"]])
       data$obs <- 1:nrow(data)
       data$`Significance (0.05)` <- ifelse(data$q.value<0.05, "Significant", "Not significant")
       ggplot(data, aes(x = obs, y = logFC, col = `Significance (0.05)`)) +
@@ -130,7 +129,7 @@ shinyApp(
     output$detec_text <- renderText({
       req(input$uploadfc)
       num <- grep(value = FALSE, pattern = input$datasetsnorm, x = input$uploadfc$name)
-      data <- read.delim(input$uploadfc[[num, "datapath"]])
+      data <- read.csv(input$uploadfc[[num, "datapath"]])
       data$obs <- 1:nrow(data)
       length <- ceiling(nrow(data)/5)
       datcut <- split(data, rep(1:ceiling(nrow(data)/length), each=length, length.out=nrow(data)))
@@ -241,18 +240,13 @@ shinyApp(
         norm_counts <- data.frame(row.names = rc$locus_tag)
         for (i in 3:ncol(rc)){
           calc <- rc[,c(1, 2, i)]
-          back <- calc[1:1000,]
-          back$keep <- nrow(calc)+1000
-          front <- calc[((nrow(calc)-999):nrow(calc)),]
-          front$keep <- nrow(calc)+1000
+          calc[(nrow(calc)+1):(nrow(calc)+1000),] <- calc[1:1000,]
           calc$keep <- 1:nrow(calc)
-          calc2 <- rbind(front, calc, back)
-
-          calc2$pred <- FBN::medianFilter(inputData = calc2[,3], windowSize = window_size)
-          calc2 <- calc2[!calc2$keep > nrow(rc),]
-          calc2$ratio <- calc2$pred/mean(calc2$pred)
-          calc2$norm <- as.integer(round(calc2[,3]/calc2$ratio))
-          norm_counts[,i-2] <- calc2$norm
+          calc$pred <- FBN::medianFilter(inputData = calc[,3], windowSize = window_size)
+          calc <- calc[!calc$keep > nrow(rc),]
+          calc$ratio <- calc$pred/mean(calc$pred)
+          calc$norm <- as.integer(round(calc[,3]/calc$ratio))
+          norm_counts[,i-2] <- calc$norm
         }
 
         offset <- (log(norm_counts + 0.01) - log(rc[,3:(ncol(rc))] + 0.01))
@@ -286,7 +280,6 @@ shinyApp(
         fit <- glmFit(y, design, robust=TRUE)
         lrt <- glmLRT(fit, contrast=contrast)
         tags_after <- lrt$table
-        tags_after$q.value <- p.adjust(tags_after$PValue, method = "BH")
 
         length <- ceiling(nrow(tags_after)/5)
         tagplot <- split(tags_after, rep(1:ceiling(nrow(tags_after)/length), each=length, length.out=nrow(tags_after)))
@@ -327,11 +320,10 @@ shinyApp(
       de.tgw <- exactTest(d,pair=c(ctrl, condition))
       #de.tgw <- exactTest(d,pair=c("MH", "Cip"))
       tags_before <- data.frame(de.tgw$table)
-      tags_before$q.value <- p.adjust(tags_before$PValue, method = "BH")
-      tags_before$`Significance (0.05)` <- ifelse(tags_before$q.value < 0.05, "Significant", "Not significant")
+      tags_before$`Significance (0.05)` <- ifelse(tags_before$PValue < 0.05, "Significant", "Not significant")
       tags_before <<- tags_before
       tags_after$ob <- 1:nrow(tags_after)
-      tags_after$`Significance (0.05)` <- ifelse(tags_after$q.value < 0.05, "Significant", "Not significant")
+      tags_after$`Significance (0.05)` <- ifelse(tags_after$PValue < 0.05, "Significant", "Not significant")
       cond <<- condition
       tags_before <<- tags_before
       tags_after <<- tags_after
@@ -379,15 +371,13 @@ shinyApp(
            alt = "This is alternate text")
     }, deleteFile = TRUE)
 
-    output$normdata <- DT::renderDataTable({
+    tableout <- reactive({
       req(input$run)
-      output$download <- renderUI({
-        actionButton("download_attempt", label = "download csv", class = "btn-secondary")
-      })
       corplot()
       if (done == TRUE) {
         tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
         rownames(tags_after) <- 1:nrow(tags_after)
+        colnames(tags_after)[4:5] <- c("Pvalue", "q.value")
         table_out <<- tags_after
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
         if (!is.null(input$locusinfo)){
@@ -395,18 +385,25 @@ shinyApp(
           table_out <<- merge(locusinfo, table_out, by = "locus_tag", all.x = TRUE)
         }
         table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
-        DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
+        table_out
       }
     })
 
-    observeEvent(input$download_attempt, {
-      write.table(table_out,file=paste0(wdir, "/", cond, "_ChromoCorrect.csv"),
-                  append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
-      shinyalert(title = "Success",
-                 text = paste0(cond, "_ChromoCorrect.csv has been saved to ", wdir))
-      rm(list = c("cond", "table_out", "tags_after", "tags_before", "wdir", "window_size"), envir = .GlobalEnv)
-    })
+    output$normdata <- DT::renderDataTable({
+      output$download <- renderUI({
+        downloadButton("download", label = "download csv", class = "btn-secondary")
+      })
+        tableout()
+        DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
+      })
+
+    output$download <- downloadHandler(
+      filename = function() {
+        paste0(cond, "_ChromoCorrect.csv")
+      },
+      content = function(file) {
+        table_out <- tableout()
+        write.table(table_out, file, append=FALSE, quote=TRUE, sep=",", row.names=FALSE)
+      })
   }
 )
-
-

@@ -9,6 +9,20 @@ library(devtools)
 ```{r}
 install_github("gerisullivan/ChromoCorrect")
 ```
+4. Make sure your dependencies are installed.
+RTools:
+Some packages rely on R packages from source which requires RTools to download. 
+Windows: download RTools from https://cran.r-project.org/bin/windows/Rtools/
+MacOS: the Xcode suite (if not already installed) is available at https://developer.apple.com/xcode/resources/
+
+Bioconductor:
+There are some R packages required to be installed from Bioconductor. If they do not download as dependencies when installing ChromoCorrect, you can install them yourself below:
+
+```{r}
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("FBN", "locfit", "edgeR", "limma")
+```
 
 ## Folder organisation
 To organise your input and output files, we recommend creating a folder on your local computer. Within this folder, create two sub-folders: **logFCs**, and **readcounts**.
@@ -70,7 +84,7 @@ norm_readcounts <- normalise_bias(readcounts)
 ```
 
 # Example data
-The ciprofloxacin data set published with this paper is available under /ChromoCorrect/inputData/. It can be used within the app and locally.
+The ciprofloxacin data set published with this paper is available at https://github.com/gerisullivan/ChromoCorrect/tree/master/inputData. This data can be used to run the scripts and as input for the app.
 
 # Troubleshooting
 If you encounter any errors while using the `ChromoCorrect` package, try reinstalling the package and restarting R. If the problem persists, please consult the package documentation or contact the package author for support.

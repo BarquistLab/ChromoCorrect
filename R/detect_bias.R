@@ -9,7 +9,7 @@
 #' @export
 #'
 detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
-  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim, sep = ",")
+  myfiles <- lapply(list.files(path = path, pattern = "*.csv", full.names = TRUE), utils::read.delim)
   joined <- myfiles %>% purrr::reduce(dplyr::full_join, by = "locus_tag")
   filenames <- list.files(path = path, pattern = "*.csv") %>%
     gsub(pattern = ".csv", replacement = "")
@@ -56,4 +56,34 @@ detect_bias <- function(path = "/logfcs", locusInfo = TRUE, savePlot = TRUE){
   } else {
     suppressWarnings(plot(p))
   }
+
+  res <- data.frame()
+  for (h in 1:length(myfiles)){
+    sum.dat <- myfiles[[h]]
+    sum.dat <- sum.dat[!is.na(sum.dat$logFC),]
+    length <- ceiling(nrow(sum.dat)/5)
+    sum.dat2 <- split(sum.dat, rep(1:ceiling(nrow(sum.dat)/length), each=length, length.out=nrow(sum.dat)))
+
+    summary <- data.frame()
+    for (i in 1:length(sum.dat2)){
+      split.dat <- sum.dat2[[i]]
+      split.dat.2 <- cut(split.dat$logFC, quantile(split.dat$logFC, c(0, 0.2, 0.8, 1)), include.lowest = TRUE, lab = c("lo", "mid", "hi"))
+      split.dat.2 <- split(split.dat$logFC, split.dat.2)
+      split.dat.2 <- as.data.frame(split.dat.2$mid)
+      split.dat.2$ob <- 1:nrow(split.dat.2)
+      model <- lm(split.dat.2$`split.dat.2$mid`~split.dat.2$ob)
+      summary[i,1] <- summary(model)$coefficients[2,4]
+      summary[i,2] <- mean(split.dat.2$`split.dat.2$mid`)
+      summary[i,3] <- summary(model)$coefficients[1,1]
+      summary[i,4] <- max(split.dat.2$`split.dat.2$mid`)-min(split.dat.2$`split.dat.2$mid`)
+    }
+    summary$sample <- filenames[h]
+    res <- rbind(res, summary)
+  }
+  if (any(res$V1<0.1) & any(abs(res$V3)>0.05)) {
+    sub.dat <- res[res$V1<0.1,]
+    sub.dat <- sub.dat[sub.dat$V3>0.05,]
+    culprits <- unique(sub.dat$sample)
+  }
+  cat(sep = "", "It appears the following samples have chromosomal location bias: ", paste0(culprits, collapse = ", "), ".\nPlease consider proceeding to correction with these samples.")
 }

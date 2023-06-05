@@ -1,28 +1,28 @@
 Package: ChromoCorrect
 Title: Detection and Correction of Chromosomal Location Bias in Read Counts
-Version: 0.0.0.9000
+Version: 1.0
 Authors@R: 
     person("Geraldine", "Sullivan", , "geraldine.sullivan@hdr.mq.edu.au", role = c("aut", "cre"),
            comment = c(ORCID = "0000000152538660"))
-Description: A package and R Shiny app that detects whether chromosomal location bias is occuring, and corrects it, in read count data.
+Description: A package and R Shiny app that detects and corrects chromosomal location bias in read count data.
 License: CC BY 4.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
-biocViews: FBN, locfit
+biocViews: FBN, locfit, edgeR, limma
 Imports: 
+    BiocManager,
     dplyr,
-    edgeR,
     ggplot2,
     graphics,
     htmltools,
     htmlwidgets,
-    limma,
     magrittr,
     patchwork,
     purrr,
+    rlang,
     shiny,
     shinyalert,
     shinydashboard,
