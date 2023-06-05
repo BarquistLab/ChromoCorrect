@@ -19,68 +19,130 @@ library(FBN)
 shinyApp(
   ui = shinydashboardPlus::dashboardPage(
     options = list(sidebarExpandOnHover = TRUE),
-    header = dashboardHeader(title = "ChromoCorrect", titleWidth = 300),
-
-    sidebar = dashboardSidebar(width = 300, minified = F, collapsed = F,
-                               h4("Upload files here"),
-                               uiOutput("mytab1"), uiOutput("mytab1.1"),
-                               uiOutput("mytab2"), uiOutput("mytab2.1")
+    header = dashboardHeader(
+      title = tags$span(
+        class = "logo",
+        tags$a(href = "#", "ChromoCorrect")
+      ),
+      tags$li(class = "dropdown",
+              tags$a(href = "#", class = "dropdown-toggle", `data-toggle` = "dropdown",
+                     icon("question-circle"), " Help"),
+              tags$ul(class = "dropdown-menu",
+                      tags$li(tags$a(href = "#", tabName = "Help", "Help")))
+      )
+    ),
+    sidebar = dashboardSidebar(
+      width = 300, minified = FALSE, collapsed = FALSE,
+      conditionalPanel(
+        condition = "input.tabs != 'Help'",
+        h4("Upload files here"),
+        uiOutput("mytab1"),
+        uiOutput("mytab1.1"),
+        uiOutput("mytab2"),
+        uiOutput("mytab2.1")
+      )
     ),
     body = dashboardBody(
       tags$head(tags$script('
-                                var dimension = [0, 0];
-                                $(document).on("shiny:connected", function(e) {
-                                    dimension[0] = window.innerWidth-300;
-                                    dimension[1] = window.innerHeight-300;
-                                    Shiny.onInputChange("dimension", dimension);
-                                });
-                                $(window).resize(function(e) {
-                                    dimension[0] = window.innerWidth-300;
-                                    dimension[1] = window.innerHeight-300;
-                                    setTimeout(function() {
-                                      Shiny.onInputChange("dimension", dimension)
-                                    }, 500);
-                                });
-                            ')),
+                            var dimension = [0, 0];
+                            $(document).on("shiny:connected", function(e) {
+                                dimension[0] = window.innerWidth-300;
+                                dimension[1] = window.innerHeight-300;
+                                Shiny.onInputChange("dimension", dimension);
+                            });
+                            $(window).resize(function(e) {
+                                dimension[0] = window.innerWidth-300;
+                                dimension[1] = window.innerHeight-300;
+                                setTimeout(function() {
+                                  Shiny.onInputChange("dimension", dimension)
+                                }, 500);
+                            });
+                        ')),
       h3('Detecting and correcting chromosomal location bias'),
-      tabsetPanel(id = "tabs",
-                  tabPanel("Detecting",
-                           br(),
-                           textOutput("dimension_display"),
-                           h4("Upload your Bio::TraDIS output files to determine whether chromosomal location bias is affecting your data"),
-                           p("If the overall trend of your fold changes does not match the red line, your data needs normalising."),
-                           box(title = "Locus by fold change scatterplot",
-                               status = "primary",
-                               width = 8, height = 6,
-                               imageOutput("detec_fc", height = "100%", width = "100%")),
-                           box(
-                             width = 4,
-                             title = "Decision", status = "warning",
-                             h4(htmlOutput(outputId = "detec_text"))
-                           )),
-
-                  tabPanel("Correcting",
-                           br(),
-                           h4("Upload your Bio::TraDIS read files to correct the chromosomal location bias affecting your data"),
-                           p("This requires two control files and two condition files, or one file of read counts containing all conditions of interest."),
-                           box(title = "Before and after normalisation",
-                               status = "primary",
-                               width = 12, height = 6,
-                               imageOutput("corrected_plot", height = "100%", width = "100%")),
-                           box(title = "Normalised data",
-                               downloadButton("downloadcsv", label = "download csv", class = "btn-secondary"), br(),
-                               status = "primary",
-                               width = 12, height = 6,
-                               DT::dataTableOutput("normdata"))
-                  ))
+      tabsetPanel(
+        id = "tabs",
+        tabPanel("Detecting",
+                 br(),
+                 textOutput("dimension_display"),
+                 h4("Upload your log fold change output files to determine whether chromosomal location bias is affecting your data"),
+                 p("If the overall trend of your fold changes does not match the red line, your data needs normalising."),
+                 box(
+                   title = "Locus by fold change scatterplot",
+                   status = "primary",
+                   width = 8, height = 6,
+                   imageOutput("detec_fc", height = "100%", width = "100%")
+                 ),
+                 box(
+                   width = 4,
+                   title = "Decision",
+                   status = "warning",
+                   h4(htmlOutput(outputId = "detec_text"))
+                 )
+        ),
+        tabPanel("Correcting",
+                 br(),
+                 h4("Upload your read files to correct the chromosomal location bias affecting your data"),
+                 p("This requires two control files and two condition files, or one file of read counts containing all conditions of interest."),
+                 box(
+                   title = "Before and after normalisation",
+                   status = "primary",
+                   width = 12, height = 6,
+                   imageOutput("corrected_plot", height = "100%", width = "100%")
+                 ),
+                 box(
+                   title = "Normalised data",
+                   downloadButton("downloadcsv", label = "download csv", class = "btn-secondary"),
+                   br(),
+                   status = "primary",
+                   width = 12, height = 6,
+                   DT::dataTableOutput("normdata")
+                 )
+        ),
+        tabPanel("Help",
+                 br(),
+                 h2("Welcome to the ChromoCorrect Help Section!", style = "font-weight: bold;"),
+                 br(),
+                 h3("File Upload", style = "font-weight: bold;"),
+                 p("To use ChromoCorrect, follow these steps to upload your files:"),
+                 tags$ol(
+                   tags$li("Click on the 'Detecting' tab."),
+                   tags$li("In the sidebar, upload your output file(s). These must contain a column called 'locus_tag' and logFC."),
+                   tags$li("Cycle through your files to determine which ones may be affected by chromosomal location bias. The message box on the right will guide you."),
+                   tags$li("Click on the 'Correcting' tab if you have files affected by chromosomal location bias."),
+                   tags$li("Upload your read counts files. These may be:",
+                           tags$ul(
+                             tags$li("TraDIS pipeline output files: a file per replicate. Files contain 'locus_tag' and 'read_count' columns."),
+                             tags$li("One file containing read counts. The first column is 'locus_tag' and the four columns after are two biological replicates for two conditions. Replicate column names should end in _1 and _2. Anything before this will be used for the condition name.")
+                           )
+                   )
+                 ),
+                 br(),
+                 h3("Frequently Asked Questions (FAQ)", style = "font-weight: bold;"),
+                 br(),
+                 h4("What files do I need to upload for the 'Correcting' tab?"),
+                 p("For the 'Correcting' tab, you will need two control files and two condition files, or one file of read counts containing all conditions of interest. These files will be used to correct the chromosomal location bias affecting your data."),
+                 br(),
+                 h4("How do I interpret the scatterplot on the 'Detecting' tab?"),
+                 p("The scatterplot shows the locus by fold change relationship. If the overall trend of your fold changes does not match the red line, it indicates a potential chromosomal location bias in your data. The decision tab will also let you know if it thinks your data needs correcting."),
+                 br(),
+                 h4("How can I download the normalized data?"),
+                 p("On the 'Correcting' tab, you will find a 'Download CSV' button. Click on the button to download the normalised data as a CSV file."),
+                 br(),
+                 h4("Where can I find additional support?"),
+                 p("If you have any further questions or need additional support, please refer to the",
+                   tags$a(href = "https://htmlpreview.github.io/?https://github.com/gerisullivan/ChromoCorrect/blob/master/inst/Instructions.html", "documentation", target = "_blank"),
+                 "or raise an issue on the", tags$a(href = "https://github.com/gerisullivan/ChromoCorrect/issues", "ChromoCorrect Github", target = "_blank"), ".")
+        )
+      )
     )
   ),
+
   server = function(input, output){
 
     output$mytab1 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Detecting"',
-                         fileInput("uploadfc", "Upload your TraDIS output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
+                         fileInput("uploadfc", "Upload your output file(s) here", buttonLabel = "Browse...", multiple = TRUE),
         ))
     })
 
@@ -156,8 +218,8 @@ shinyApp(
     output$mytab2 <- renderUI({
       tagList(
         conditionalPanel(condition = 'input.tabs=="Correcting"',
-                         fileInput("uploadrc", "Upload your TraDIS read files here", multiple = TRUE, accept = c(".csv", ".tsv")),
-                         fileInput("rcfile", "OR upload your read count table here", multiple = FALSE)
+                         fileInput("uploadrc", "Upload your TraDIS read files here", multiple = TRUE, accept = c(".csv")),
+                         fileInput("rcfile", "OR upload your read count table here", multiple = FALSE, accept = c(".csv", ".tsv", ".txt"))
         ))
     })
 
