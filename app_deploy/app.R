@@ -240,13 +240,18 @@ shinyApp(
         norm_counts <- data.frame(row.names = rc$locus_tag)
         for (i in 3:ncol(rc)){
           calc <- rc[,c(1, 2, i)]
-          calc[(nrow(calc)+1):(nrow(calc)+1000),] <- calc[1:1000,]
+          back <- calc[1:1000,]
+          back$keep <- nrow(calc)+1000
+          front <- calc[((nrow(calc)-999):nrow(calc)),]
+          front$keep <- nrow(calc)+1000
           calc$keep <- 1:nrow(calc)
-          calc$pred <- FBN::medianFilter(inputData = calc[,3], windowSize = window_size)
-          calc <- calc[!calc$keep > nrow(rc),]
-          calc$ratio <- calc$pred/mean(calc$pred)
-          calc$norm <- as.integer(round(calc[,3]/calc$ratio))
-          norm_counts[,i-2] <- calc$norm
+          calc2 <- rbind(front, calc, back)
+
+          calc2$pred <- FBN::medianFilter(inputData = calc2[,3], windowSize = window_size)
+          calc2 <- calc2[!calc2$keep > nrow(rc),]
+          calc2$ratio <- calc2$pred/mean(calc2$pred)
+          calc2$norm <- as.integer(round(calc2[,3]/calc2$ratio))
+          norm_counts[,i-2] <- calc2$norm
         }
 
         offset <- (log(norm_counts + 0.01) - log(rc[,3:(ncol(rc))] + 0.01))
