@@ -288,6 +288,7 @@ shinyApp(
         lrt <- glmLRT(fit, contrast=contrast)
         tags_after <- lrt$table
         tags_after$q.value <- p.adjust(tags_after$PValue, method = "BH")
+        tags_after <- subset(tags_after, select = -(LR))
 
         length <- ceiling(nrow(tags_after)/5)
         tagplot <- split(tags_after, rep(1:ceiling(nrow(tags_after)/length), each=length, length.out=nrow(tags_after)))
@@ -389,8 +390,7 @@ shinyApp(
       if (done == TRUE) {
         tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
         rownames(tags_after) <- 1:nrow(tags_after)
-        table_out <- tags_after
-        table_out <<- subset(table_out, select=-c(LR))
+        table_out <<- tags_after
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
         if (!is.null(input$locusinfo)){
           locusinfo <- read.delim(input$locusinfo$datapath)

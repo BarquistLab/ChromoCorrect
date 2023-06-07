@@ -287,6 +287,7 @@ shinyApp(
         lrt <- glmLRT(fit, contrast=contrast)
         tags_after <- lrt$table
         tags_after$q.value <- p.adjust(tags_after$PValue, method = "BH")
+        tags_after <- subset(tags_after, select = -(LR))
 
         length <- ceiling(nrow(tags_after)/5)
         tagplot <- split(tags_after, rep(1:ceiling(nrow(tags_after)/length), each=length, length.out=nrow(tags_after)))
@@ -385,19 +386,18 @@ shinyApp(
       if (done == TRUE) {
         tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
         rownames(tags_after) <- 1:nrow(tags_after)
-        table_out <- tags_after
-        table_out <<- subset(table_out, select=-c(LR))
+        table_out <<- tags_after
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
         if (!is.null(input$locusinfo)){
           locusinfo <- read.delim(input$locusinfo$datapath)
           table_out <<- merge(locusinfo, table_out, by = "locus_tag", all.x = TRUE)
         }
-        table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
       }
     })
 
     output$normdata <- DT::renderDataTable({
-        tableout()
+        table_out <- tableout()
+        table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
         DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
       })
 
