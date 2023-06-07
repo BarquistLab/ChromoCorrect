@@ -117,6 +117,15 @@ shinyApp(
                    )
                  ),
                  br(),
+                 h3("Example files", style = "font-weight: bold;"),
+                 h5("Example TraDIS output file. Contains locus_tag and logFC columns."),
+                 p("Upload any number of files containing these columns in the Detecting tab to determine whether chromosomal location bias is affecting your data."),
+                 DT::dataTableOutput("helpfc"),
+                 br(),
+                 h5("Example TraDIS read count file. Contains locus_tag and read_count columns."),
+                 p("Upload two controls and two conditions into the TraDIS upload section of the Correcting tab."),
+                 DT::dataTableOutput("helprc"),
+                 br(),
                  h3("Frequently Asked Questions (FAQ)", style = "font-weight: bold;"),
                  br(),
                  h4("What files do I need to upload for the 'Correcting' tab?"),
@@ -152,6 +161,17 @@ shinyApp(
                          selectizeInput("datasetsnorm", "Select dataset for visualising:",
                                         choices = gsub(".csv$", "", input$uploadfc$name))
         ))
+    })
+
+    output$helprc <- DT::renderDataTable({
+      dat <- read.delim(file = "../inputData/MH_2.tradis_gene_insert_sites.csv")
+      DT::datatable(dat[1:5,], options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    })
+
+    output$helpfc <- DT::renderDataTable({
+      dat <- read.csv("../inputData/Cip_uncorrected.csv")
+      dat <- dat[1:5,]
+      DT::datatable(dat, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
     detecplot <- reactive({
