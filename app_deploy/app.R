@@ -134,7 +134,7 @@ shinyApp(
                  h4("How do I interpret the scatterplot on the 'Detecting' tab?"),
                  p("The scatterplot shows the locus by fold change relationship. If the overall trend of your fold changes does not match the red line, it indicates a potential chromosomal location bias in your data. The decision tab will also let you know if it thinks your data needs correcting."),
                  br(),
-                 h4("How can I download the normalized data?"),
+                 h4("How can I download the normalised data?"),
                  p("On the 'Correcting' tab, you will find a 'Download CSV' button. Click on the button to download the normalised data as a CSV file."),
                  br(),
                  h4("Where can I find additional support?"),
