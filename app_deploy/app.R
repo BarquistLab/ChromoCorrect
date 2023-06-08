@@ -114,7 +114,8 @@ shinyApp(
                              tags$li("TraDIS pipeline output files: a file per replicate. Files contain 'locus_tag' and 'read_count' columns."),
                              tags$li("One file containing read counts. The first column is 'locus_tag' and the four columns after are two biological replicates for two conditions. Replicate column names should end in _1 and _2. Anything before this will be used for the condition name.")
                            )
-                   )
+                   ),
+                   tags$li("Download your normalised data using the Download CSV button to get your data for downstream analysis.")
                  ),
                  br(),
                  h3("Example files", style = "font-weight: bold;"),
@@ -164,12 +165,14 @@ shinyApp(
     })
 
     output$helprc <- DT::renderDataTable({
-      dat <- read.delim(file = "../inputData/MH_2.tradis_gene_insert_sites.csv")
+      dat <- read.delim(file = "/inputData/MH_2.tradis_gene_insert_sites.csv")
       DT::datatable(dat[1:5,], options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
     output$helpfc <- DT::renderDataTable({
-      dat <- read.csv("../inputData/Cip_uncorrected.csv")
+      print(getwd())
+      print(list.files())
+      dat <- read.csv("/inputData/Cip_uncorrected.csv")
       dat <- dat[1:5,]
       DT::datatable(dat, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
