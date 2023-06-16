@@ -498,7 +498,7 @@ shinyApp(
     })
 
     output$normdata <- DT::renderDataTable({
-        table_out <- tableout()
+        tableout()
         table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
         DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
       })
