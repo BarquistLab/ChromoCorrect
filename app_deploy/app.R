@@ -115,17 +115,25 @@ shinyApp(
                              tags$li("One file containing read counts. The first column is 'locus_tag' and the four columns after are two biological replicates for two conditions. Replicate column names should end in _1 and _2. Anything before this will be used for the condition name.")
                            )
                    ),
+                   tags$li("Choose which group is your control from the drop-down box. This is based on your file or column names."),
                    tags$li("Download your normalised data using the Download CSV button to get your data for downstream analysis.")
                  ),
                  br(),
                  h3("Example files", style = "font-weight: bold;"),
+                 h4("Detecting tab - fold changes"),
                  h5("Example TraDIS output file. Contains locus_tag and logFC columns."),
                  p("Upload any number of files containing these columns in the Detecting tab to determine whether chromosomal location bias is affecting your data."),
                  DT::dataTableOutput("helpfc"),
                  br(),
+                 h4("Correcting tab - read counts"),
                  h5("Example TraDIS read count file. Contains locus_tag and read_count columns."),
                  p("Upload two controls and two conditions into the TraDIS upload section of the Correcting tab."),
                  DT::dataTableOutput("helprc"),
+                 h5("Example single read count file. Contains locus_tag and column names with group and replicate information."),
+                 p("Each file must have at least two controls and two conditions, and no more than two groups."),
+                 DT::dataTableOutput("helprc_single"),
+                 h5("Example locus information file. Contains locus_tag column with any other descripive information."),
+                 DT::dataTableOutput("helprc_locus"),
                  br(),
                  h3("Frequently Asked Questions (FAQ)", style = "font-weight: bold;"),
                  br(),
@@ -164,17 +172,24 @@ shinyApp(
         ))
     })
 
-    output$helprc <- DT::renderDataTable({
-      dat <- read.delim(file = "/inputData/MH_2.tradis_gene_insert_sites.csv")
-      DT::datatable(dat[1:5,], options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    output$helpfc <- DT::renderDataTable({
+      dat <- read.csv("Cip_uncorrected.csv")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
-    output$helpfc <- DT::renderDataTable({
-      print(getwd())
-      print(list.files())
-      dat <- read.csv("/inputData/Cip_uncorrected.csv")
-      dat <- dat[1:5,]
-      DT::datatable(dat, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    output$helprc <- DT::renderDataTable({
+      dat <- read.delim(file = "MH_2.tradis_gene_insert_sites.csv")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    })
+
+    output$helprc_single <- DT::renderDataTable({
+      dat <- read.delim(file = "rc_example.txt")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    })
+
+    output$helprc_locus <- DT::renderDataTable({
+      dat <- read.delim(file = "locusInfo.tsv")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
     detecplot <- reactive({
