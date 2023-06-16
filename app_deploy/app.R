@@ -173,7 +173,7 @@ shinyApp(
     })
 
     output$helpfc <- DT::renderDataTable({
-      dat <- read.csv("Cip_uncorrected.csv")
+      dat <- read.delim("Cip_uncorrected.csv")
       DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
@@ -508,7 +508,7 @@ shinyApp(
         paste0(cond, "_ChromoCorrect.csv")
       },
       content = function(file) {
-        write.csv(tableout(), file, row.names=FALSE)
+        write.csv(table_out, file, row.names=FALSE)
       })
   }
 )
