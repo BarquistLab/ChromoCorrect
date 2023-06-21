@@ -16,6 +16,8 @@ library(patchwork)
 library(edgeR)
 library(FBN)
 
+#options(repos = append(BiocManager::repositories(), getOption("repos")))
+
 shinyApp(
   ui = shinydashboardPlus::dashboardPage(
     options = list(sidebarExpandOnHover = TRUE),
@@ -137,8 +139,9 @@ shinyApp(
                  br(),
                  h3("Frequently Asked Questions (FAQ)", style = "font-weight: bold;"),
                  br(),
-                 h4("What files do I need to upload for the 'Correcting' tab?"),
-                 p("For the 'Correcting' tab, you will need two control files and two condition files, or one file of read counts containing all conditions of interest. These files will be used to correct the chromosomal location bias affecting your data."),
+                 h4("I get an error 'more than two conditions detected' when trying to correct my data - what is this?"),
+                 p("You need to follow the naming convention so the app can determine which files are replicates."),
+                 p("Files should be named generally as 'condition_replicate.extension', such as 'MH_1.tradis.gene.insert.sites', without the extension when uploading one file of read counts: 'MH_1, MH_2, Cip_1, Cip_2'."),
                  br(),
                  h4("How do I interpret the scatterplot on the 'Detecting' tab?"),
                  p("The scatterplot shows the locus by fold change relationship. If the overall trend of your fold changes does not match the red line, it indicates a potential chromosomal location bias in your data. The decision tab will also let you know if it thinks your data needs correcting."),
