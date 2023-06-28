@@ -11,8 +11,8 @@ A package and R Shiny app that detects and corrects chromosomal location bias in
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/gerisullivan/ChromoCorrect}
-  \item Report bugs at \url{https://github.com/gerisullivan/ChromoCorrect/issues}
+  \item \url{https://github.com/BarquistLab/ChromoCorrect}
+  \item Report bugs at \url{https://github.com/BarquistLab/ChromoCorrect/issues}
 }
 
 }

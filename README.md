@@ -16,7 +16,7 @@ You can install the development version of ChromoCorrect from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("gerisullivan/ChromoCorrect")
+devtools::install_github("BarquistLab/ChromoCorrect")
 ```
 
 ## Dependencies
@@ -41,7 +41,7 @@ can install them yourself below:
 ``` r
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("FBN", "locfit", "edgeR", "limma")
+BiocManager::install("locfit", "edgeR", "limma")
 ```
 
 ## Example - running the app
@@ -56,6 +56,6 @@ launch_app()
 ## Further instructions
 
 Please see the
-[Instructions](https://htmlpreview.github.io/?https://github.com/gerisullivan/ChromoCorrect/blob/master/inst/Instructions.html)
+[Instructions](https://htmlpreview.github.io/?https://github.com/BarquistLab/ChromoCorrect/blob/master/inst/Instructions.html)
 file for detailed information on running the ChromoCorrect app or the
 commands independently of the app.

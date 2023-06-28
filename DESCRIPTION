@@ -30,6 +30,6 @@ Imports:
     shinydashboardPlus,
     shinyjs,
     stats
-URL: https://github.com/gerisullivan/ChromoCorrect
-BugReports: https://github.com/gerisullivan/ChromoCorrect/issues
+URL: https://github.com/BarquistLab/ChromoCorrect
+BugReports: https://github.com/BarquistLab/ChromoCorrect/issues
 LazyData: true
