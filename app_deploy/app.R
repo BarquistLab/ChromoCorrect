@@ -106,7 +106,7 @@ shinyApp(
                  p("To use ChromoCorrect, follow these steps to upload your files:"),
                  tags$ol(
                    tags$li("Click on the 'Detecting' tab."),
-                   tags$li("In the sidebar, upload your output file(s). These must contain a column called 'locus_tag' and logFC."),
+                   tags$li("In the sidebar, upload your output file(s). There must be columns called 'locus_tag' and 'logFC'."),
                    tags$li("Cycle through your files to determine which ones may be affected by chromosomal location bias. The message box on the right will guide you."),
                    tags$li("Click on the 'Correcting' tab if you have files affected by chromosomal location bias."),
                    tags$li("Upload your read counts files. These may be:",
@@ -433,8 +433,8 @@ shinyApp(
       tags_before$q.value <- p.adjust(tags_before$PValue, method = "BH")
       tags_before$`Significance (0.05)` <- ifelse(tags_before$q.value < 0.05, "Significant", "Not significant")
       tags_before <<- tags_before
-      tags_after$ob <- 1:nrow(tags_after)
       tags_after$`Significance (0.05)` <- ifelse(tags_after$q.value < 0.05, "Significant", "Not significant")
+      tags_after$ob <- 1:nrow(tags_after)
       cond <<- condition
       tags_before <<- tags_before
       tags_after <<- tags_after
@@ -486,7 +486,7 @@ shinyApp(
       req(input$run)
       corplot()
       if (done == TRUE) {
-        tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-2))])
+        tags_after <- cbind("locus_tag" = rownames(tags_after), tags_after[,c(1:(ncol(tags_after)-1))])
         rownames(tags_after) <- 1:nrow(tags_after)
         table_out <<- tags_after
         output$download <- renderUI(actionButton("download_attempt", "Download csv"))
@@ -499,8 +499,8 @@ shinyApp(
 
     output$normdata <- DT::renderDataTable({
         tableout()
-        table_out <- table_out[order(table_out$q.value, decreasing = FALSE),]
-        DT::datatable(table_out, rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
+        table_out <- table_out[order(table_out$`Significance (0.05)`, -dat$logFC, decreasing = T),]
+        DT::datatable(table_out[,1:ncol(table_out)], rownames = FALSE, options = list(pageLength = 15)) %>% DT::formatRound(columns = c((ncol(table_out)-3):(ncol(table_out))), digits = c(2,2,4,4))
       })
 
     output$downloadcsv <- downloadHandler(
@@ -512,3 +512,4 @@ shinyApp(
       })
   }
 )
+
