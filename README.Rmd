@@ -46,7 +46,7 @@ There are some R packages required to be installed from Bioconductor. If they do
 ```{r eval=FALSE}
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("locfit", "edgeR", "limma")
+BiocManager::install(c("locfit", "edgeR", "limma"))
 ```
 
 
