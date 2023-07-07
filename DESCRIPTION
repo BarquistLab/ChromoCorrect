@@ -29,7 +29,8 @@ Imports:
     shinydashboard,
     shinydashboardPlus,
     shinyjs,
-    stats
+    stats,
+    vctrs
 URL: https://github.com/BarquistLab/ChromoCorrect
 BugReports: https://github.com/BarquistLab/ChromoCorrect/issues
 LazyData: true
