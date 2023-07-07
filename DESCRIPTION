@@ -11,10 +11,12 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 Depends: 
     R (>= 2.10)
-biocViews: FBN, locfit, edgeR, limma
+biocViews: locfit, edgeR, limma
 Imports: 
     BiocManager,
     dplyr,
+    DT,
+    FBN,
     ggplot2,
     graphics,
     htmltools,
@@ -28,7 +30,8 @@ Imports:
     shinydashboard,
     shinydashboardPlus,
     shinyjs,
-    stats
-URL: https://github.com/gerisullivan/ChromoCorrect
-BugReports: https://github.com/gerisullivan/ChromoCorrect/issues
+    stats,
+    vctrs
+URL: https://github.com/BarquistLab/ChromoCorrect
+BugReports: https://github.com/BarquistLab/ChromoCorrect/issues
 LazyData: true

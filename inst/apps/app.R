@@ -73,7 +73,62 @@ shinyApp(
                                status = "primary",
                                width = 12, height = 6,
                                DT::dataTableOutput("normdata"))
-                  ))
+                  ),
+                  tabPanel("Help",
+                           br(),
+                           h2("Welcome to the ChromoCorrect Help Section!", style = "font-weight: bold;"),
+                           br(),
+                           h3("File Upload", style = "font-weight: bold;"),
+                           p("To use ChromoCorrect, follow these steps to upload your files:"),
+                           tags$ol(
+                             tags$li("Click on the 'Detecting' tab."),
+                             tags$li("In the sidebar, upload your output file(s). These must contain a column called 'locus_tag' and logFC."),
+                             tags$li("Cycle through your files to determine which ones may be affected by chromosomal location bias. The message box on the right will guide you."),
+                             tags$li("Click on the 'Correcting' tab if you have files affected by chromosomal location bias."),
+                             tags$li("Upload your read counts files. These may be:",
+                                     tags$ul(
+                                       tags$li("TraDIS pipeline output files: a file per replicate. Files contain 'locus_tag' and 'read_count' columns."),
+                                       tags$li("One file containing read counts. The first column is 'locus_tag' and the four columns after are two biological replicates for two conditions. Replicate column names should end in _1 and _2. Anything before this will be used for the condition name.")
+                                     )
+                             ),
+                             tags$li("Choose which group is your control from the drop-down box. This is based on your file or column names."),
+                             tags$li("Download your normalised data using the Download CSV button to get your data for downstream analysis.")
+                           ),
+                           br(),
+                           h3("Example files", style = "font-weight: bold;"),
+                           h4("Detecting tab - fold changes"),
+                           h5("Example TraDIS output file. Contains locus_tag and logFC columns."),
+                           p("Upload any number of files containing these columns in the Detecting tab to determine whether chromosomal location bias is affecting your data."),
+                           DT::dataTableOutput("helpfc"),
+                           br(),
+                           h4("Correcting tab - read counts"),
+                           h5("Example TraDIS read count file. Contains locus_tag and read_count columns."),
+                           p("Upload two controls and two conditions into the TraDIS upload section of the Correcting tab."),
+                           DT::dataTableOutput("helprc"),
+                           h5("Example single read count file. Contains locus_tag and column names with group and replicate information."),
+                           p("Each file must have at least two controls and two conditions, and no more than two groups."),
+                           DT::dataTableOutput("helprc_single"),
+                           h5("Example locus information file. Contains locus_tag column with any other descripive information."),
+                           DT::dataTableOutput("helprc_locus"),
+                           br(),
+                           h3("Frequently Asked Questions (FAQ)", style = "font-weight: bold;"),
+                           br(),
+                           h4("I get an error 'more than two conditions detected' when trying to correct my data - what is this?"),
+                           p("You need to follow the naming convention so the app can determine which files are replicates."),
+                           p("Files should be named generally as 'condition_replicate.extension', such as 'MH_1.tradis.gene.insert.sites', without the extension when uploading one file of read counts: 'MH_1, MH_2, Cip_1, Cip_2'."),
+                           br(),
+                           h4("How do I interpret the scatterplot on the 'Detecting' tab?"),
+                           p("The scatterplot shows the locus by fold change relationship. If the overall trend of your fold changes does not match the red line, it indicates a potential chromosomal location bias in your data. The decision tab will also let you know if it thinks your data needs correcting."),
+                           br(),
+                           h4("How can I download the normalised data?"),
+                           p("On the 'Correcting' tab, you will find a 'Download CSV' button. Click on the button to download the normalised data as a CSV file."),
+                           br(),
+                           h4("Where can I find additional support?"),
+                           p("If you have any further questions or need additional support, please refer to the",
+                             tags$a(href = "https://htmlpreview.github.io/?https://github.com/gerisullivan/ChromoCorrect/blob/master/inst/Instructions.html", "documentation", target = "_blank"),
+                             "or raise an issue on the", tags$a(href = "https://github.com/gerisullivan/ChromoCorrect/issues", "ChromoCorrect Github", target = "_blank"), ".")
+                  )
+      )
     )
   ),
   server = function(input, output){
@@ -91,6 +146,22 @@ shinyApp(
                          selectizeInput("datasetsnorm", "Select dataset for visualising:",
                                         choices = gsub(".csv", "", input$uploadfc$name))
         ))
+    })
+
+    output$helprc <- DT::renderDataTable({
+      print(getwd())
+      dat <- read.delim(file = "../../app_deploy/MH_2.tradis_gene_insert_sites.csv")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    })
+
+    output$helprc_single <- DT::renderDataTable({
+      dat <- read.delim(file = "app_deploy/rc_example.txt")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
+    })
+
+    output$helprc_locus <- DT::renderDataTable({
+      dat <- read.delim(file = "app_deploy/locusInfo.tsv")
+      DT::datatable(dat, rownames = F, options = list(paging = FALSE, searching = FALSE, ordering = FALSE))
     })
 
     detecplot <- reactive({

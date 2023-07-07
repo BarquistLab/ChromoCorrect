@@ -31,9 +31,6 @@ normalise_bias(
 \description{
 Normalises chromosomal location bias in read counts
 }
-\references{
-Will add here later
-}
 \author{
 Geraldine J Sullivan
 }

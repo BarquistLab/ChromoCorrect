@@ -20,9 +20,6 @@ structure_rc(
 \description{
 Structure read counts for normalisation with normalise_bias
 }
-\references{
-Will go here later
-}
 \author{
 Geraldine J Sullivan
 }
