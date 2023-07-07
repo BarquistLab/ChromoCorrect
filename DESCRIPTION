@@ -15,6 +15,7 @@ biocViews: locfit, edgeR, limma
 Imports: 
     BiocManager,
     dplyr,
+    DT,
     FBN,
     ggplot2,
     graphics,
