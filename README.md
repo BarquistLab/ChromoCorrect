@@ -41,7 +41,7 @@ can install them yourself below:
 ``` r
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("locfit", "edgeR", "limma")
+BiocManager::install(c("locfit", "edgeR", "limma"))
 ```
 
 ## Example - running the app
